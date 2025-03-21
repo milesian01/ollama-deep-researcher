@@ -39,9 +39,9 @@ with open("stream_output.jsonl", "w") as f:
                 continue
             try:
                 obj = json.loads(decoded)
-                except json.JSONDecodeError as e:
-                    print("JSON decode error:", e)
-                    print("Non-JSON data:", decoded)
+            except json.JSONDecodeError as e:
+                print("JSON decode error:", e)
+                print("Non-JSON data:", decoded)
                 f.flush()
                 os.fsync(f.fileno())
                 # Print status updates if available (only on change)
