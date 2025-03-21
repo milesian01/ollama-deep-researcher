@@ -25,8 +25,28 @@ payload = {
 response = requests.post(url, json=payload)
 response.raise_for_status()
 
-# Parse response
+# Parse initial response
 output = response.json()
+run_id = output["run_id"]
+
+# Poll for final output
+import time
+run_url = f"http://192.168.50.250:2024/runs/{run_id}"
+
+while True:
+    run_response = requests.get(run_url)
+    run_response.raise_for_status()
+    run_data = run_response.json()
+    status = run_data["status"]
+    print(f"Run status: {status}")
+    if status == "complete":
+        break
+    elif status == "failed":
+        print("Run failed.")
+        break
+    time.sleep(3)  # Poll every 3 seconds
+
+output = run_data  # Final result
 
 # Save to file
 with open("output.json", "w") as f:
