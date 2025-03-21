@@ -34,21 +34,27 @@ with open("stream_output.jsonl", "w") as f:
         if line:
             decoded = line.decode("utf-8")
             print(f"Raw line: {decoded}")  # Debug print
+            # Skip lines starting with "event:"
             if decoded.startswith("event:"):
                 print("Skipping event line:", decoded)
                 continue
+            # Remove "data:" prefix if present
+            elif decoded.startswith("data:"):
+                decoded = decoded[len("data:"):].strip()
+
             try:
                 obj = json.loads(decoded)
             except json.JSONDecodeError as e:
                 print("JSON decode error:", e)
                 print("Non-JSON data:", decoded)
-                f.flush()
-                os.fsync(f.fileno())
-                # Print status updates if available (only on change)
-                if "status" in obj:
-                    if obj["status"] != prev_status:
-                        print(f"Status update: {obj['status']}")
-                        prev_status = obj["status"]
-            except json.JSONDecodeError:
-                print("Non-JSON data:", decoded)
+                continue
+
+            f.write(json.dumps(obj) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+            # Print status updates if available (only on change)
+            if "status" in obj:
+                if obj["status"] != prev_status:
+                    print(f"Status update: {obj['status']}")
+                    prev_status = obj["status"]
 print("Streaming complete. Output saved to stream_output.jsonl")
