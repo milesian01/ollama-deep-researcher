@@ -13,8 +13,8 @@ with open("stream_output.jsonl", "r", encoding="utf-8") as f:
             continue
 
 if summary:
-    # Properly decode JSON escapes while preserving UTF-8 characters
-    pretty = codecs.decode(summary, "unicode_escape")
+    # No decoding needed - summary is already properly decoded by json.loads()
+    pretty = summary
 
     # Split content and sources
     if "### Sources:" in pretty:
