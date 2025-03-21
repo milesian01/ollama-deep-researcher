@@ -37,6 +37,7 @@ def generate_query(state: SummaryState, config: RunnableConfig):
 
     # Generate a query
     configurable = Configuration.from_runnable_config(config)
+    print(f" Using config: {configurable.model_dump()}")
     
     # Choose the appropriate LLM based on the provider
     if configurable.llm_provider == "lmstudio":
