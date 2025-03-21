@@ -1,8 +1,8 @@
 import requests
 import json
 
-# Target LangGraph endpoint
-url = "http://192.168.50.250:2024/runs"
+# Target LangGraph streaming endpoint
+url = "http://192.168.50.250:2024/runs/stream"
 
 # Input payload
 payload = {
@@ -23,7 +23,7 @@ payload = {
 }
 
 # Send the request
-response = requests.post(url, json=payload)
+response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
 
 # Parse initial response
