@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 
@@ -36,6 +37,7 @@ with open("stream_output.jsonl", "w") as f:
                 obj = json.loads(decoded)
                 f.write(json.dumps(obj) + "\n")
                 f.flush()
+                os.fsync(f.fileno())
                 # Print status updates if available (only on change)
                 if "status" in obj:
                     if obj["status"] != prev_status:
