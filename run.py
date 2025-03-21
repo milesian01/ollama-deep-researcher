@@ -18,7 +18,8 @@ payload = {
     },
     "config": {
         "recursion_limit": 150
-    }
+    },
+    "temporary": False
 }
 
 # Send the request
