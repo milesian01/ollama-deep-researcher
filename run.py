@@ -28,10 +28,11 @@ response.raise_for_status()
 # Parse initial response
 output = response.json()
 run_id = output["run_id"]
+thread_id = output["thread_id"]
 
 # Poll for final output
 import time
-run_url = f"http://192.168.50.250:2024/runs/{run_id}"
+run_url = f"http://192.168.50.250:2024/threads/{thread_id}"
 
 while True:
     run_response = requests.get(run_url)
