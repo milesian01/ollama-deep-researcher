@@ -33,13 +33,15 @@ with open("stream_output.jsonl", "w") as f:
     for line in response.iter_lines():
         if line:
             decoded = line.decode("utf-8")
+            print(f"Raw line: {decoded}")  # Debug print
+            if decoded.startswith("event:"):
+                print("Skipping event line:", decoded)
+                continue
             try:
-                print(f"Raw line: {decoded}")  # Debug print
-                try:
-                    obj = json.loads(decoded)
+                obj = json.loads(decoded)
                 except json.JSONDecodeError as e:
-                    print(f"JSON decode error: {e}")
-                f.write(json.dumps(obj) + "\n")
+                    print("JSON decode error:", e)
+                    print("Non-JSON data:", decoded)
                 f.flush()
                 os.fsync(f.fileno())
                 # Print status updates if available (only on change)
