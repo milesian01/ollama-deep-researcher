@@ -30,13 +30,12 @@ output = response.json()
 run_id = output["run_id"]
 print("Initial run metadata:")
 print(json.dumps(output, indent=2))
-thread_id = output["thread_id"]
 
 # Poll for final output
 import time
 
 prev_status = None
-run_url = f"http://192.168.50.250:2024/threads/{thread_id}"
+run_url = f"http://192.168.50.250:2024/runs/{run_id}"
 
 while True:
     run_response = requests.get(run_url)
