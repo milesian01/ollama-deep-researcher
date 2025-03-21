@@ -27,14 +27,18 @@ payload = {
 response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
 
-print("Streaming run output...")
+print("Streaming run output:")
 with open("stream_output.jsonl", "w") as f:
     prev_status = None
     for line in response.iter_lines():
         if line:
             decoded = line.decode("utf-8")
             try:
-                obj = json.loads(decoded)
+                print(f"Raw line: {decoded}")  # Debug print
+                try:
+                    obj = json.loads(decoded)
+                except json.JSONDecodeError as e:
+                    print(f"JSON decode error: {e}")
                 f.write(json.dumps(obj) + "\n")
                 f.flush()
                 os.fsync(f.fileno())
