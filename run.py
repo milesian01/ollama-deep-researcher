@@ -26,37 +26,17 @@ payload = {
 response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
 
-# Parse initial response
-output = response.json()
-run_id = output["run_id"]
-print("Initial run metadata:")
-print(json.dumps(output, indent=2))
-
-# Poll for final output
-import time
-
-prev_status = None
-run_url = f"http://192.168.50.250:2024/runs/{run_id}"
-
-while True:
-    run_response = requests.get(run_url)
-    run_response.raise_for_status()
-    run_data = run_response.json()
-    status = run_data["status"]
-    if status != prev_status:
-        print(f"Run status changed: {status}")
-        prev_status = status
-    if status == "complete":
-        break
-    elif status == "failed":
-        print("Run failed.")
-        break
-    time.sleep(3)  # Poll every 3 seconds
-
-output = run_data  # Final result
-
-# Save to file
-with open("output.json", "w") as f:
-    json.dump(output, f, indent=2)
-
-print("Output saved to output.json")
+print("Streaming run output...")
+with open("stream_output.jsonl", "w") as f:
+    for line in response.iter_lines():
+        if line:
+            decoded = line.decode("utf-8")
+            try:
+                obj = json.loads(decoded)
+                f.write(json.dumps(obj) + "\n")
+                # Print status updates if available (only on change)
+                if "status" in obj:
+                    print(f"Status update: {obj['status']}")
+            except json.JSONDecodeError:
+                print("Non-JSON data:", decoded)
+print("Streaming complete. Output saved to stream_output.jsonl")
