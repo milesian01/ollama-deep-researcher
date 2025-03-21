@@ -8,6 +8,7 @@ url = "http://192.168.50.250:2024/runs/stream"
 # Input payload
 payload = {
     "assistant_id": "ollama_deep_researcher",
+    "assistant_id": "ollama_deep_researcher",
     "graph": "ollama_deep_researcher", 
     "input": {
         "research_topic": (
@@ -20,7 +21,7 @@ payload = {
     "config": {
         "recursion_limit": 150
     },
-    "temporary": False
+    "temporary": True
 }
 
 # Send the request
