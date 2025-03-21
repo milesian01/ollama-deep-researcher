@@ -28,10 +28,14 @@ response.raise_for_status()
 # Parse initial response
 output = response.json()
 run_id = output["run_id"]
+print("Initial run metadata:")
+print(json.dumps(output, indent=2))
 thread_id = output["thread_id"]
 
 # Poll for final output
 import time
+
+prev_status = None
 run_url = f"http://192.168.50.250:2024/threads/{thread_id}"
 
 while True:
@@ -39,7 +43,9 @@ while True:
     run_response.raise_for_status()
     run_data = run_response.json()
     status = run_data["status"]
-    print(f"Run status: {status}")
+    if status != prev_status:
+        print(f"Run status changed: {status}")
+        prev_status = status
     if status == "complete":
         break
     elif status == "failed":
