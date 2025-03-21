@@ -35,6 +35,7 @@ with open("stream_output.jsonl", "w") as f:
             try:
                 obj = json.loads(decoded)
                 f.write(json.dumps(obj) + "\n")
+                f.flush()
                 # Print status updates if available (only on change)
                 if "status" in obj:
                     if obj["status"] != prev_status:
