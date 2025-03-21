@@ -28,6 +28,7 @@ response.raise_for_status()
 
 print("Streaming run output...")
 with open("stream_output.jsonl", "w") as f:
+    prev_status = None
     for line in response.iter_lines():
         if line:
             decoded = line.decode("utf-8")
@@ -36,7 +37,9 @@ with open("stream_output.jsonl", "w") as f:
                 f.write(json.dumps(obj) + "\n")
                 # Print status updates if available (only on change)
                 if "status" in obj:
-                    print(f"Status update: {obj['status']}")
+                    if obj["status"] != prev_status:
+                        print(f"Status update: {obj['status']}")
+                        prev_status = obj["status"]
             except json.JSONDecodeError:
                 print("Non-JSON data:", decoded)
 print("Streaming complete. Output saved to stream_output.jsonl")
