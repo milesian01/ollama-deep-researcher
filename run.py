@@ -34,8 +34,11 @@ with open("stream_output.jsonl", "w") as f:
         if line:
             decoded = line.decode("utf-8")
             print(f"Raw line: {decoded}")  # Debug print
-            # Skip lines starting with "event:"
-            if decoded.startswith("event:"):
+            # Skip heartbeat and event lines
+            if decoded.startswith(":"):
+                print("Skipping heartbeat line")
+                continue
+            elif decoded.startswith("event:"):
                 print("Skipping event line:", decoded)
                 continue
             # Remove "data:" prefix if present
