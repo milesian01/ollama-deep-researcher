@@ -17,7 +17,7 @@ payload = {
         )
     },
     "config": {
-        "recursion_limit": 50
+        "recursion_limit": 150
     }
 }
 
