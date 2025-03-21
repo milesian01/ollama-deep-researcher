@@ -1,4 +1,5 @@
 import json
+import codecs
 
 summary = None
 
@@ -12,8 +13,8 @@ with open("stream_output.jsonl", "r", encoding="utf-8") as f:
             continue
 
 if summary:
-    # Decode escaped sequences
-    pretty = summary.encode().decode("unicode_escape").strip()
+    # Properly decode JSON escapes while preserving UTF-8 characters
+    pretty = codecs.decode(summary, "unicode_escape")
 
     # Split content and sources
     if "### Sources:" in pretty:
