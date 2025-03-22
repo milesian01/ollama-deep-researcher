@@ -14,7 +14,7 @@ ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLA
 title_url = f"{ollama_base_url}/api/generate"
 title_payload = {
     "model": "gemma3:27b-it-q8_0",
-    "prompt": f"Generate a single short filename (no explanation) for the research topic: '{args.query}'. Use US file naming conventions. Output ONLY the filename. Use only letters, numbers, hyphens, or underscores. No punctuation, spaces, or newlines.",
+    "prompt": f"Generate a short filename (no explanation) for the research topic: '{args.query}'. DO NOT include any reference to dates, months, or years. Use US file naming conventions. Output ONLY the filename, using only letters, numbers, hyphens, or underscores, with no spaces or extra punctuation.",
     "stream": False
 }
 title_headers = {"Content-Type": "application/json"}
@@ -35,8 +35,8 @@ max_filename_length = 100
 file_title = file_title[:max_filename_length]
 
 # Target LangGraph streaming endpoint
-timestamp = datetime.now().strftime("%m-%d-%Y_%I-%M-%S_%p")
-output_filename = f"{file_title}_{timestamp}.jsonl"
+timestamp = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
+output_filename = f"{timestamp}_{file_title}.jsonl"
 
 # Target LangGraph streaming endpoint
 url = "http://192.168.50.250:2024/runs/stream"
