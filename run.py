@@ -29,7 +29,6 @@ file_title = first_line.replace(" ", "_")
 if not file_title or any(c in file_title for c in r'\/:*?"<>|'):
     file_title = "research_output"
 # Sanitize the title (replace spaces with underscores)
-# Sanitize the title (replace spaces with underscores)
 file_title = file_title.replace(" ", "_")
 # Truncate if filename is too long
 max_filename_length = 100  
