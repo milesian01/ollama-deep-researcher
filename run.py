@@ -92,3 +92,50 @@ with open(output_filename, "w") as f:
                     print(f"Status update: {obj['status']}")
                     prev_status = obj["status"]
 print(f"Streaming complete. Output saved to {output_filename}")
+
+# -------------------------------
+# Post-process output to extract summary and write markdown file
+# -------------------------------
+
+summary = None
+with open(output_filename, "r", encoding="utf-8") as f:
+    for line in f:
+        try:
+            obj = json.loads(line)
+            if "running_summary" in obj:
+                summary = obj["running_summary"]
+        except json.JSONDecodeError:
+            continue
+
+if summary:
+    # Use the already decoded summary
+    pretty = summary
+
+    # Split content and sources
+    if "### Sources:" in pretty:
+        main_text, sources_block = pretty.split("### Sources:", 1)
+    else:
+        main_text, sources_block = pretty, ""
+
+    # Parse sources into proper markdown bullets
+    sources_lines = []
+    for line in sources_block.strip().splitlines():
+        if line.startswith("* "):
+            try:
+                title, url = line[2:].split(" : ", 1)
+                sources_lines.append(f"- [{title.strip()}]({url.strip()})")
+            except ValueError:
+                sources_lines.append(f"- {line.strip()}")  # fallback
+
+    # Create a markdown filename based on the dynamic output filename
+    md_filename = output_filename.replace(".jsonl", "_final_summary.md")
+    with open(md_filename, "w", encoding="utf-8") as out:
+        out.write(main_text.strip() + "\n\n")
+        if sources_lines:
+            out.write("### Sources:\n")
+            out.write("\n".join(sources_lines))
+            out.write("\n")
+
+    print(f"Clean Markdown summary written to {md_filename}")
+else:
+    print("No running_summary found in the output file.")
