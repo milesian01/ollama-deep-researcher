@@ -2,11 +2,34 @@ import os
 import requests
 import json
 import argparse
+from datetime import datetime
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
 parser.add_argument("query", help="The research topic to investigate")
 args = parser.parse_args()
+
+# Generate file title using the gemma model via Ollama API
+ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
+title_url = f"{ollama_base_url}/api/generate"
+title_payload = {
+    "model": "gemma3:27b-it-q8_0",
+    "prompt": f"Generate a concise file title for the research topic: '{args.query}' using US file naming conventions. Use only alphanumeric characters, hyphens, and underscores.",
+    "stream": False
+}
+title_headers = {"Content-Type": "application/json"}
+title_response = requests.post(title_url, headers=title_headers, json=title_payload)
+title_response.raise_for_status()
+title_result = title_response.json()
+generated_title = title_result.get("response", "").strip()
+if not generated_title:
+    generated_title = "default_title"
+# Sanitize the title (replace spaces with underscores)
+file_title = generated_title.replace(" ", "_")
+
+# Target LangGraph streaming endpoint
+timestamp = datetime.now().strftime("%m-%d-%Y_%I-%M-%S_%p")
+output_filename = f"{file_title}_{timestamp}.jsonl"
 
 # Target LangGraph streaming endpoint
 url = "http://192.168.50.250:2024/runs/stream"
@@ -29,7 +52,7 @@ response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
 
 print("Streaming run output:")
-with open("stream_output.jsonl", "w") as f:
+with open(output_filename, "w") as f:
     prev_status = None
     for line in response.iter_lines():
         if line:
@@ -61,4 +84,4 @@ with open("stream_output.jsonl", "w") as f:
                 if obj["status"] != prev_status:
                     print(f"Status update: {obj['status']}")
                     prev_status = obj["status"]
-print("Streaming complete. Output saved to stream_output.jsonl")
+print(f"Streaming complete. Output saved to {output_filename}")
