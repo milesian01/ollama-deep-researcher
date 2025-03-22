@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import argparse
+import time
 from datetime import datetime
 
 # Set up argument parser
@@ -54,6 +55,7 @@ payload = {
     "temporary": True
 }
 
+start_time = time.time()
 # Send the request
 response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
@@ -91,7 +93,13 @@ with open(output_filename, "w") as f:
                 if obj["status"] != prev_status:
                     print(f"Status update: {obj['status']}")
                     prev_status = obj["status"]
-print(f"Streaming complete. Output saved to {output_filename}")
+end_time = time.time()
+run_duration_seconds = int(end_time - start_time)  # total run time in seconds
+# Create a new filename that includes the run time (e.g., appending '_{seconds}s')
+new_output_filename = f"{timestamp}_{file_title}_{run_duration_seconds}s.jsonl"
+os.rename(output_filename, new_output_filename)
+output_filename = new_output_filename  # update filename for subsequent processing
+print(f"Streaming complete. Run time: {run_duration_seconds}s. Output saved to {output_filename}")
 
 # -------------------------------
 # Post-process output to extract summary and write markdown file
