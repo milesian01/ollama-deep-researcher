@@ -14,18 +14,23 @@ ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLA
 title_url = f"{ollama_base_url}/api/generate"
 title_payload = {
     "model": "gemma3:27b-it-q8_0",
-    "prompt": f"Generate a concise file title for the research topic: '{args.query}' using US file naming conventions. Use only alphanumeric characters, hyphens, and underscores.",
+    "prompt": f"Generate a single short filename (no explanation) for the research topic: '{args.query}'. Use US file naming conventions. Output ONLY the filename. Use only letters, numbers, hyphens, or underscores. No punctuation, spaces, or newlines."
     "stream": False
 }
 title_headers = {"Content-Type": "application/json"}
 title_response = requests.post(title_url, headers=title_headers, json=title_payload)
 title_response.raise_for_status()
 title_result = title_response.json()
-generated_title = title_result.get("response", "").strip()
-if not generated_title:
-    generated_title = "default_title"
+raw_response = title_result.get("response", "").strip()
+# Extract first line, sanitize, and fallback if needed
+first_line = raw_response.splitlines()[0].strip()
+file_title = first_line.replace(" ", "_")
+if not file_title or any(c in file_title for c in r'\/:*?"<>|'):
+    file_title = "research_output"
 # Sanitize the title (replace spaces with underscores)
-file_title = generated_title.replace(" ", "_")
+# Truncate if filename is too long
+max_filename_length = 100  
+file_title = generated_title.replace(" ", "_")[:max_filename_length]
 
 # Target LangGraph streaming endpoint
 timestamp = datetime.now().strftime("%m-%d-%Y_%I-%M-%S_%p")
