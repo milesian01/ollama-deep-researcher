@@ -94,12 +94,16 @@ with open(output_filename, "w") as f:
                     print(f"Status update: {obj['status']}")
                     prev_status = obj["status"]
 end_time = time.time()
-run_duration_seconds = int(end_time - start_time)  # total run time in seconds
-# Create a new filename that includes the run time (e.g., appending '_{seconds}s')
-new_output_filename = f"{timestamp}_{file_title}_{run_duration_seconds}s.jsonl"
+# Calculate duration in hours and minutes
+duration_seconds = int(end_time - start_time)
+hours = duration_seconds // 3600
+minutes = (duration_seconds % 3600) // 60
+
+# Create a new filename that includes the run time (e.g., appending '_Hh_Mm')
+new_output_filename = f"{timestamp}_{file_title}_{hours}h_{minutes}m.jsonl"
 os.rename(output_filename, new_output_filename)
 output_filename = new_output_filename  # update filename for subsequent processing
-print(f"Streaming complete. Run time: {run_duration_seconds}s. Output saved to {output_filename}")
+print(f"Streaming complete. Run time: {hours}h {minutes}m. Output saved to {output_filename}")
 
 # -------------------------------
 # Post-process output to extract summary and write markdown file
