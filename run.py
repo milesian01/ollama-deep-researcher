@@ -18,7 +18,6 @@ payload = {
     "input": {
         "research_topic": args.query
     },
-    },
     "config": {
         "recursion_limit": 150
     },
