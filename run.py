@@ -12,10 +12,7 @@ payload = {
     "graph": "ollama_deep_researcher", 
     "input": {
         "research_topic": (
-            "My son just turned 5 years old and he is still wearing pull-ups at night. "
-            "I have no idea how to train him to hold in his pee overnight. Give me as many specific strategies "
-            "as possible that we can try in a gradual order. The sequence should make sense in terms of if one "
-            "strategy fails, the next will build upon the previous."
+            "Investigate the use of distilled water in preparing coffee, focusing on its safety and suitability for small children. Consider factors such as mineral content, potential health implications, and any recommendations from health authorities."
         )
     },
     "config": {
