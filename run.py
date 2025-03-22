@@ -1,6 +1,12 @@
 import os
 import requests
 import json
+import argparse
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description="Run LangGraph query.")
+parser.add_argument("query", help="The research topic to investigate")
+args = parser.parse_args()
 
 # Target LangGraph streaming endpoint
 url = "http://192.168.50.250:2024/runs/stream"
@@ -11,8 +17,7 @@ payload = {
     "assistant_id": "ollama_deep_researcher",
     "graph": "ollama_deep_researcher", 
     "input": {
-        "research_topic": (
-            "Investigate the use of distilled water in preparing coffee, focusing on its safety and suitability for small children. Consider factors such as mineral content, potential health implications, and any recommendations from health authorities."
+        "research_topic": args.query
         )
     },
     "config": {
