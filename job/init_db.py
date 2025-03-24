@@ -1,8 +1,11 @@
+import os
 import sqlite3
 
-DB_PATH = 'job_queue.db'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(script_dir, 'job_queue.db')
 
-conn = sqlite3.connect(DB_PATH)
+conn = sqlite3.connect(DB_PATH, timeout=30)
+conn.execute("PRAGMA journal_mode=WAL;")
 c = conn.cursor()
 
 # Create a table "jobs" with:
