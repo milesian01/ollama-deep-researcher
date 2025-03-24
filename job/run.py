@@ -100,8 +100,8 @@ with open(output_filename, "w") as f:
 end_time = time.time()
 # Calculate duration in hours and minutes
 duration_seconds = int(end_time - start_time)
-hours = duration_seconds // 3600
-minutes = (duration_seconds % 3600) // 60
+hours, remainder = divmod(duration_seconds, 3600)
+minutes, seconds = divmod(remainder, 60)
 
 # Create a new filename that includes the run time (e.g., appending '_Hh_Mm')
 new_output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}_{hours}h_{minutes}m.jsonl")
