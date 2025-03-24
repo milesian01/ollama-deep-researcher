@@ -11,6 +11,8 @@ Current date: {current_date}
 Please ensure your queries account for the most current information available as of this date.
 </CONTEXT>
 
+Your query must explicitly avoid ambiguity or overly broad wording; ensure specificity to maximize the relevance and precision of search results.
+
 <TOPIC>
 {research_topic}
 </TOPIC>
@@ -44,6 +46,9 @@ Produce an extensively detailed and verbose research report from the provided we
 5. Actively anticipate and explicitly address potential questions or confusions the reader might have, providing clarifying details and additional context.
 6. If extending an existing summary, explicitly state what new information or expanded detail is being integrated, and how it enhances the overall analysis.
 7. Aim for substantial length—ideally 3000-5000 words, or as detailed as the provided context allows.
+8. Explicitly avoid vague or generic statements. Every explanation must be precise, detailed, and nuanced.
+9. Clearly state any assumptions or uncertainties underlying your analysis. If certain information is missing, explicitly indicate this and describe its implications.
+10. Explicitly include critical evaluations, clearly identifying strengths, weaknesses, controversies, or areas of active debate in the subject matter.
 </REQUIREMENTS>
 
 <FORMATTING>
@@ -66,8 +71,8 @@ Produce an extensively detailed and verbose research report from the provided we
 reflection_instructions = """You are an expert research assistant performing a detailed critical review of a summary on {research_topic}.
 
 <GOAL>
-1. Carefully and explicitly analyze the summary, providing detailed reasoning about what specific knowledge gaps, nuances, technical details, or contextual complexities remain under-addressed.
-2. Generate an extensively detailed and precise follow-up query designed to explore these gaps thoroughly.
+1. Critically and explicitly evaluate the provided summary. Verbosely detail exactly which nuanced or technical aspects remain insufficiently addressed, unclear, oversimplified, or ambiguous. Explicitly clarify why addressing each identified gap or complexity is crucial to thoroughly understanding the research topic.
+2. Generate a meticulously detailed follow-up query specifically designed to fully address or clarify the identified gaps or nuances. Your follow-up query must explicitly specify what additional information is needed, why it's necessary, and how obtaining it will enhance the depth and comprehensiveness of the research.
 </GOAL>
 
 <REQUIREMENTS>
