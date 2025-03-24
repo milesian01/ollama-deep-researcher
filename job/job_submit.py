@@ -10,7 +10,11 @@ def main():
     prompt = sys.argv[1]
     
     conn = sqlite3.connect('/app/job/job_queue.db')
-        job_id = db_handler.submit_job(prompt)
+    c = conn.cursor()
+    c.execute("INSERT INTO jobs (prompt, status) VALUES (?, 'queued')", (prompt,))
+    conn.commit()
+    job_id = c.lastrowid
+    conn.close()
         
     if job_id:
         print(f"Job added with ID {job_id} and prompt: {prompt}")
