@@ -30,8 +30,8 @@ def mark_job_failed(conn, job_id, error_message):
     conn.commit()
 
 def run_job(prompt):
-    # Call run.py with the prompt as a CLI argument
-    cmd = ['python3', 'run.py', prompt]
+    # Use the full path to run.py, since it's in /app/job
+    cmd = ['python3', '/app/job/run.py', prompt]
     result = subprocess.run(cmd, capture_output=True, text=True)
     return result
 
