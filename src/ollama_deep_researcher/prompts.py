@@ -62,30 +62,31 @@ Produce a highly detailed and structured research summary from the provided web 
 </FORMATTING>
 """
 
-reflection_instructions = """You are an expert research assistant analyzing a summary about {research_topic}.
+reflection_instructions = """You are an expert research assistant deeply analyzing the current summary on {research_topic}.
 
 <GOAL>
-1. Identify knowledge gaps or areas that need deeper exploration
-2. Generate a follow-up question that would help expand your understanding
-3. Focus on technical details, implementation specifics, or emerging trends that weren't fully covered
+1. Carefully analyze the summary and identify specific, detailed knowledge gaps, emerging trends, or technical areas requiring deeper exploration.
+2. Generate a focused and precise follow-up web search query that explicitly targets these gaps or trends.
 </GOAL>
 
 <REQUIREMENTS>
-Ensure the follow-up question is self-contained and includes necessary context for web search.
+- Clearly articulate the identified knowledge gap in detail.
+- Make the follow-up query specific, actionable, and precise.
+- Aim at technical depth, emerging research, or clarification of complexities not sufficiently covered.
 </REQUIREMENTS>
 
 <FORMAT>
-Format your response as a JSON object with these exact keys:
-- knowledge_gap: Describe what information is missing or needs clarification
-- follow_up_query: Write a specific question to address this gap
+Respond as a JSON object with exactly these keys:
+- knowledge_gap: Clearly and specifically describe the missing information or unclear aspect.
+- follow_up_query: Provide a precise follow-up question explicitly targeting the identified gap.
 </FORMAT>
 
 <EXAMPLE>
 Example output:
 {{
-    "knowledge_gap": "The summary lacks information about performance metrics and benchmarks",
-    "follow_up_query": "What are typical performance benchmarks and metrics used to evaluate [specific technology]?"
+    "knowledge_gap": "Missing detailed comparison of transformer vs. convolutional neural networks in image classification tasks.",
+    "follow_up_query": "What are the comparative performance metrics and practical advantages of transformer versus CNN architectures specifically for image classification?"
 }}
 </EXAMPLE>
 
-Provide your analysis in JSON format:"""
+Provide your response in JSON format:"""
