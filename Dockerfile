@@ -16,6 +16,9 @@ ENV PATH="/root/.local/bin:${PATH}"
 # 2) Copy the repository content
 COPY . /app
 
+# 2.5) Install Python dependencies
+RUN pip install --no-cache-dir requests
+
 # 3) Provide default environment variables to point to Ollama (running elsewhere)
 #    Adjust the OLLAMA_URL to match your actual Ollama container or service.
 ENV OLLAMA_BASE_URL="http://localhost:11434/"
