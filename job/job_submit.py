@@ -1,5 +1,5 @@
 import sys
-from .db import DBHandler
+import sqlite3
 
 def main():
     """Main function to submit a new job"""
@@ -9,7 +9,7 @@ def main():
     
     prompt = sys.argv[1]
     
-    with DBHandler() as db_handler:
+    conn = sqlite3.connect('/app/job/job_queue.db')
         job_id = db_handler.submit_job(prompt)
         
     if job_id:

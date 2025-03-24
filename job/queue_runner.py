@@ -3,7 +3,7 @@ import subprocess
 import time
 from datetime import datetime
 
-DB_PATH = 'job_queue.db'
+DB_PATH = '/app/job/job_queue.db'
 POLL_INTERVAL = 5  # seconds between polling for new jobs
 
 def get_next_job(conn):
