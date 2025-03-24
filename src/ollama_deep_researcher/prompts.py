@@ -80,4 +80,4 @@ reflection_instructions = """You are an expert research assistant performing a d
 Respond as a JSON object with exactly these keys:
 - knowledge_gap: Provide a thorough, verbose description of the specific gap or complexity.
 - follow_up_query: Provide an explicitly detailed, highly specific follow-up question.
-</FORMAT>
+</FORMAT>"""
