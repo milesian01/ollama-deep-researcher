@@ -33,60 +33,51 @@ Provide your response in JSON format:"""
 
 summarizer_instructions = """
 <GOAL>
-Produce a highly detailed and structured research summary from the provided web search results, including an Executive Summary, Detailed Analysis, and clearly delineated Sections.
+Produce an extensively detailed and verbose research report from the provided web search results. The report should thoroughly unpack concepts, provide nuanced explanations, and delve deeply into technical details and implications.
 </GOAL>
 
 <REQUIREMENTS>
-1. Begin with an Executive Summary (~150-250 words) clearly outlining key findings and main insights.
-2. Provide a Detailed Analysis section, divided logically into subsections, each clearly titled based on content.
-3. Within each subsection, integrate relevant insights from the search results thoroughly and cohesively.
-4. Include nuanced perspectives, address different angles, controversies, or open questions clearly.
-5. If extending an existing summary, integrate new information thoughtfully, clearly indicate updates, and expand existing points with deeper detail.
-6. Your summary must be comprehensive and detailed, ideally between 1500-3000 words in total (if possible given the provided context).
+1. Begin with a comprehensive Executive Summary (~300-400 words) that encapsulates the key insights, discoveries, and overarching themes.
+2. Follow with a Detailed Analysis section, structured into several clearly titled subsections, each meticulously addressing different dimensions of the topic.
+3. Each subsection should be expansive, thoroughly detailed, and verbose. Explicitly discuss underlying concepts, theories, implementation details, comparisons, and critical evaluations.
+4. Provide illustrative examples, hypothetical scenarios, and explanatory analogies whenever possible to deepen understanding.
+5. Actively anticipate and explicitly address potential questions or confusions the reader might have, providing clarifying details and additional context.
+6. If extending an existing summary, explicitly state what new information or expanded detail is being integrated, and how it enhances the overall analysis.
+7. Aim for substantial length—ideally 3000-5000 words, or as detailed as the provided context allows.
 </REQUIREMENTS>
 
 <FORMATTING>
-- Structure your summary clearly using Markdown formatting:
+- Clearly structure the output in Markdown with headings and subheadings:
     # Executive Summary
-    (concise summary)
+    (Comprehensive, detailed summary)
 
     # Detailed Analysis
-    ## Subsection Title
-    (content)
-    
-    ## Another Subsection Title
-    (content)
+    ## Subsection Title (e.g., Background & Concepts)
+    (Highly detailed explanation)
 
-- DO NOT use XML tags in the output.
-- Ensure your summary is self-contained and highly informative.
+    ## Another Subsection Title (e.g., Current Best Practices)
+    (In-depth discussion and examples)
+
+- DO NOT use XML tags in your output.
+- Ensure your writing is thorough, explanatory, and rich in detail.
 </FORMATTING>
 """
 
-reflection_instructions = """You are an expert research assistant deeply analyzing the current summary on {research_topic}.
+reflection_instructions = """You are an expert research assistant performing a detailed critical review of a summary on {research_topic}.
 
 <GOAL>
-1. Carefully analyze the summary and identify specific, detailed knowledge gaps, emerging trends, or technical areas requiring deeper exploration.
-2. Generate a focused and precise follow-up web search query that explicitly targets these gaps or trends.
+1. Carefully and explicitly analyze the summary, providing detailed reasoning about what specific knowledge gaps, nuances, technical details, or contextual complexities remain under-addressed.
+2. Generate an extensively detailed and precise follow-up query designed to explore these gaps thoroughly.
 </GOAL>
 
 <REQUIREMENTS>
-- Clearly articulate the identified knowledge gap in detail.
-- Make the follow-up query specific, actionable, and precise.
-- Aim at technical depth, emerging research, or clarification of complexities not sufficiently covered.
+- Verbosely articulate exactly why the identified knowledge gap is important, including implications of not addressing it.
+- Your follow-up query must be highly detailed, specifying precisely what additional information is required and why.
+- Aim to enhance depth, encourage explicit elaboration, and clarify complexities.
 </REQUIREMENTS>
 
 <FORMAT>
 Respond as a JSON object with exactly these keys:
-- knowledge_gap: Clearly and specifically describe the missing information or unclear aspect.
-- follow_up_query: Provide a precise follow-up question explicitly targeting the identified gap.
+- knowledge_gap: Provide a thorough, verbose description of the specific gap or complexity.
+- follow_up_query: Provide an explicitly detailed, highly specific follow-up question.
 </FORMAT>
-
-<EXAMPLE>
-Example output:
-{{
-    "knowledge_gap": "Missing detailed comparison of transformer vs. convolutional neural networks in image classification tasks.",
-    "follow_up_query": "What are the comparative performance metrics and practical advantages of transformer versus CNN architectures specifically for image classification?"
-}}
-</EXAMPLE>
-
-Provide your response in JSON format:"""
