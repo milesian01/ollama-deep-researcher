@@ -3,3 +3,4 @@
 job/_output/
 ollama_deep_researcher.egg-info/
 src/ollama_deep_researcher/__pycache__/
+job/job_queue.db
