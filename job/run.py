@@ -34,9 +34,14 @@ file_title = file_title.replace(" ", "_")
 max_filename_length = 100  
 file_title = file_title[:max_filename_length]
 
+# Define the output directory relative to this script's location
+output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_output")
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
 # Target LangGraph streaming endpoint
 timestamp = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
-output_filename = f"{timestamp}_{file_title}.jsonl"
+output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}.jsonl")
 
 # Target LangGraph streaming endpoint
 url = "http://192.168.50.250:2024/runs/stream"
@@ -99,7 +104,7 @@ hours = duration_seconds // 3600
 minutes = (duration_seconds % 3600) // 60
 
 # Create a new filename that includes the run time (e.g., appending '_Hh_Mm')
-new_output_filename = f"{timestamp}_{file_title}_{hours}h_{minutes}m.jsonl"
+new_output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}_{hours}h_{minutes}m.jsonl")
 os.rename(output_filename, new_output_filename)
 output_filename = new_output_filename  # update filename for subsequent processing
 print(f"Streaming complete. Run time: {hours}h {minutes}m. Output saved to {output_filename}")
