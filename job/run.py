@@ -133,15 +133,15 @@ if summary:
     else:
         main_text, sources_block = pretty, ""
 
-    # Parse sources into proper markdown bullets
+    # Parse sources into proper markdown bullets from verbose format
     sources_lines = []
+    current_title = None
     for line in sources_block.strip().splitlines():
-        if line.startswith("* "):
-            try:
-                title, url = line[2:].split(" : ", 1)
-                sources_lines.append(f"- [{title.strip()}]({url.strip()})")
-            except ValueError:
-                sources_lines.append(f"- {line.strip()}")  # fallback
+        if line.startswith("Source:"):
+            current_title = line.split("Source:")[1].strip()
+        elif line.startswith("URL:") and current_title:
+            url = line.split("URL:")[1].strip()
+            sources_lines.append(f"- [{current_title}]({url})")
 
     # Create a markdown filename based on the dynamic output filename
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
