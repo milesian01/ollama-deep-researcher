@@ -133,6 +133,11 @@ if sources_gathered:
 else:
     print("📎 No sources_gathered found in output")
 
+print("🧾 Checking for running_summary content...")
+print(f"Summary present? {'Yes' if running_summary else 'No'}")
+if running_summary:
+    print("Contains '### Sources:'?", '### Sources:' in running_summary)
+    
 if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
     with open(md_filename, "w", encoding="utf-8") as out:
