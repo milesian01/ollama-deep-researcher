@@ -98,10 +98,10 @@ with open(output_filename, "w") as f:
                     print(f"Status update: {obj['status']}")
                     prev_status = obj["status"]
 end_time = time.time()
-# Calculate duration in hours and minutes
-duration_seconds = int(end_time - start_time)
-hours, remainder = divmod(duration_seconds, 3600)
-minutes, seconds = divmod(remainder, 60)
+# Calculate duration in hours and minutes correctly
+duration_seconds = end_time - start_time
+hours = int(duration_seconds // 3600)
+minutes = int((duration_seconds % 3600) // 60)
 
 # Create a new filename that includes the run time (e.g., appending '_Hh_Mm')
 new_output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}_{hours}h_{minutes}m.jsonl")
