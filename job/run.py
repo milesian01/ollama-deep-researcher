@@ -110,55 +110,33 @@ output_filename = new_output_filename  # update filename for subsequent processi
 print(f"Streaming complete. Run time: {hours}h {minutes}m. Output saved to {output_filename}")
 
 # -------------------------------
-# Post-process output to extract summary and write markdown file
+# Post-process output to extract summary and sources, then write markdown file
 # -------------------------------
 
-summary = None
+running_summary = None
+sources_gathered = None
+
+# Read the JSONL file and update with the last instance of each key
 with open(output_filename, "r", encoding="utf-8") as f:
     for line in f:
         try:
             obj = json.loads(line)
             if "running_summary" in obj:
-                summary = obj["running_summary"]
+                running_summary = obj["running_summary"]
+            if "sources_gathered" in obj:
+                sources_gathered = obj["sources_gathered"]
         except json.JSONDecodeError:
             continue
 
-if summary:
-    # Use the already decoded summary
-    pretty = summary
-
-    # Split content and sources
-    if "### Sources:" in pretty:
-        main_text, sources_block = pretty.split("### Sources:", 1)
-    else:
-        main_text, sources_block = pretty, ""
-
-    # Parse sources into proper markdown bullets (supports both verbose and bullet formats)
-    sources_lines = []
-    current_title = None
-    for line in sources_block.strip().splitlines():
-        line = line.strip()
-        if line.startswith("* "):
-            try:
-                title, url = line[2:].split(" : ", 1)
-                sources_lines.append(f"- [{title.strip()}]({url.strip()})")
-            except ValueError:
-                sources_lines.append(f"- {line}")
-        elif line.startswith("Source:"):
-            current_title = line.split("Source:")[1].strip()
-        elif line.startswith("URL:") and current_title:
-            url = line.split("URL:")[1].strip()
-            sources_lines.append(f"- [{current_title}]({url})")
-
-    # Create a markdown filename based on the dynamic output filename
+if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
     with open(md_filename, "w", encoding="utf-8") as out:
-        out.write(main_text.strip() + "\n\n")
-        if sources_lines:
-            out.write("### Sources:\n")
-            out.write("\n".join(sources_lines))
-            out.write("\n")
+        out.write(running_summary.strip() + "\n\n")
 
+        if sources_gathered and len(sources_gathered) > 0:
+            out.write("### Sources:\n")
+            for source in sources_gathered:
+                out.write(source.strip() + "\n")
     print(f"Clean Markdown summary written to {md_filename}")
 else:
     print("No running_summary found in the output file.")
