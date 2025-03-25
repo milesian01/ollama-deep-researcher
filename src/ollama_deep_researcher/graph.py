@@ -254,7 +254,7 @@ def finalize_summary(state: SummaryState):
         Dictionary with state update, including running_summary key containing the formatted final summary with sources
     """
 
-    # Deduplicate sources before joining
+    print("✅ FINALIZE SUMMARY reached.")
     seen_sources = set()
     unique_sources = []
     
@@ -269,6 +269,9 @@ def finalize_summary(state: SummaryState):
     # Join the deduplicated sources
     all_sources = "\n".join(unique_sources)
     state.running_summary = f"## Summary\n\n{state.running_summary}\n\n ### Sources:\n{all_sources}"
+    
+    print(f"📦 Final summary length: {len(state.running_summary)}")
+    print(f"📦 Total sources gathered: {len(state.sources_gathered)}")
     return {"running_summary": state.running_summary}
 
 def route_research(state: SummaryState, config: RunnableConfig) -> Literal["finalize_summary", "web_research"]:
