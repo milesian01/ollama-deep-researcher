@@ -292,7 +292,7 @@ def route_research(state: SummaryState, config: RunnableConfig) -> Literal["fina
     
     print(f"📍 Routing decision: loop {state.research_loop_count} / {configurable.max_web_research_loops}")
     
-    if state.research_loop_count <= configurable.max_web_research_loops:
+    if state.research_loop_count < configurable.max_web_research_loops:
         print("🔄 Continuing research loop")
         return "web_research"
     else:
