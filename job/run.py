@@ -131,12 +131,17 @@ with open(output_filename, "r", encoding="utf-8") as f:
 if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
     with open(md_filename, "w", encoding="utf-8") as out:
-        out.write(running_summary.strip() + "\n\n")
+        # Remove the first "## Summary" header if it exists
+        cleaned_summary = running_summary.strip()
+        if cleaned_summary.startswith("## Summary"):
+            cleaned_summary = cleaned_summary.replace("## Summary", "", 1).strip()
+        out.write(cleaned_summary + "\n\n")
 
         if sources_gathered and len(sources_gathered) > 0:
             out.write("### Sources:\n")
-            for source in sources_gathered:
-                out.write(source.strip() + "\n")
+            # Use only the last instance from sources_gathered to avoid duplicates
+            last_source_block = sources_gathered[-1]
+            out.write(last_source_block.strip() + "\n")
     print(f"Clean Markdown summary written to {md_filename}")
 else:
     print("No running_summary found in the output file.")
