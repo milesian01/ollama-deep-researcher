@@ -173,6 +173,7 @@ def summarize_sources(state: SummaryState, config: RunnableConfig):
 
     # Strip thinking tokens if configured
     running_summary = result.content
+    print(f"📝 Summary updated. Length: {len(running_summary)} characters")
     if configurable.strip_thinking_tokens:
         running_summary = strip_thinking_tokens(running_summary)
 
@@ -220,6 +221,11 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
     
     # Strip thinking tokens if configured
     try:
+        # Try to parse as JSON first
+        # Log raw content before parsing
+        print("📡 Reflection step complete. Raw content:")
+        print(result.content[:300])  # just a preview
+        
         # Try to parse as JSON first
         reflection_content = json.loads(result.content)
         # Get the follow-up query
