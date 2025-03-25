@@ -128,6 +128,8 @@ with open(output_filename, "r", encoding="utf-8") as f:
         except json.JSONDecodeError:
             continue
 
+print(f"📎 Found {len(sources_gathered)} source lines for Markdown output")
+
 if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
     with open(md_filename, "w", encoding="utf-8") as out:
@@ -138,6 +140,7 @@ if running_summary:
         out.write(cleaned_summary + "\n\n")
 
         if sources_gathered and len(sources_gathered) > 0:
+            print(f"📑 Writing {len(sources_gathered)} source lines to Markdown")
             out.write("### Sources:\n")
             # Use only the last instance from sources_gathered to avoid duplicates
             last_source_block = sources_gathered[-1]
