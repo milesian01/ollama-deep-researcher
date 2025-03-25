@@ -14,8 +14,8 @@ from ollama_deep_researcher.prompts import query_writer_instructions, summarizer
 from ollama_deep_researcher.lmstudio import ChatLMStudio
 
 # Nodes
-print("🧠 Node: generate_query")
 def generate_query(state: SummaryState, config: RunnableConfig):
+    print("🧠 Node: generate_query")
     """LangGraph node that generates a search query based on the research topic.
     
     Uses an LLM to create an optimized search query for web research based on
@@ -75,8 +75,8 @@ def generate_query(state: SummaryState, config: RunnableConfig):
         search_query = content
     return {"search_query": search_query}
 
-print("🧠 Node: web_research")
 def web_research(state: SummaryState, config: RunnableConfig):
+    print("🧠 Node: web_research")
     """LangGraph node that performs web research using the generated search query.
     
     Executes a web search using the configured search API (tavily, perplexity, 
@@ -114,8 +114,8 @@ def web_research(state: SummaryState, config: RunnableConfig):
 
     return {"sources_gathered": [format_sources(search_results)], "research_loop_count": state.research_loop_count + 1, "web_research_results": [search_str]}
 
-print("🧠 Node: summarize_sources")
 def summarize_sources(state: SummaryState, config: RunnableConfig):
+    print("🧠 Node: summarize_sources")
     """LangGraph node that summarizes web research results.
     
     Uses an LLM to create or update a running summary based on the newest web research 
@@ -179,8 +179,8 @@ def summarize_sources(state: SummaryState, config: RunnableConfig):
 
     return {"running_summary": running_summary}
 
-print("🧠 Node: reflect_on_summary")
 def reflect_on_summary(state: SummaryState, config: RunnableConfig):
+    print("🧠 Node: reflect_on_summary")
     """LangGraph node that identifies knowledge gaps and generates follow-up queries.
     
     Analyzes the current summary to identify areas for further research and generates
@@ -239,8 +239,8 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
         # If parsing fails or the key is not found, use a fallback query
         return {"search_query": f"Tell me more about {state.research_topic}"}
         
-print("🧠 Node: finalize_summary")
 def finalize_summary(state: SummaryState):
+    print("🧠 Node: finalize_summary")
     """LangGraph node that finalizes the research summary.
     
     Prepares the final output by deduplicating and formatting sources, then
