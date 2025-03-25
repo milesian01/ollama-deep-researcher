@@ -128,7 +128,10 @@ with open(output_filename, "r", encoding="utf-8") as f:
         except json.JSONDecodeError:
             continue
 
-print(f"📎 Found {len(sources_gathered)} source lines for Markdown output")
+if sources_gathered:
+    print(f"📎 Found {len(sources_gathered)} source blocks for Markdown output")
+else:
+    print("📎 No sources_gathered found in output")
 
 if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
