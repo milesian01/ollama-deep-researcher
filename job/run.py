@@ -4,6 +4,10 @@ import json
 import argparse
 import time
 from datetime import datetime
+import uuid
+from langgraph.types import Command
+
+thread_id = str(uuid.uuid4())
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
@@ -54,14 +58,30 @@ payload = {
         "research_topic": args.query
     },
     "config": {
-        "recursion_limit": 1599
+        "configurable": {"thread_id": thread_id},
+        "recursion_limit": 100  # Reduced to force pause for testing
     },
     "temporary": True
 }
 
 start_time = time.time()
-# Send the request
-response = requests.post(url, json=payload, stream=True)
+try:
+    # Initial request
+    response = requests.post(url, json=payload, stream=True)
+except Exception as e:
+    print("Graph paused due to recursion limit. Resuming automatically...")
+    
+    # Create resume command
+    resume_command = Command(resume=True)
+    response = requests.post(url, json={
+        "assistant_id": "ollama_deep_researcher",
+        "graph": "ollama_deep_researcher",
+        "input": resume_command,
+        "config": {
+            "configurable": {"thread_id": thread_id}
+        },
+        "temporary": True
+    }, stream=True)
 response.raise_for_status()
 
 print("Streaming run output:")
