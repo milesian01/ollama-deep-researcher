@@ -1,10 +1,30 @@
 import json
+import time
 
 from typing_extensions import Literal
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_ollama import ChatOllama
+
+def call_llm_with_retries(llm_function, messages, expected_keys, retries=3, delay=1):
+    """
+    Calls the LLM and validates that the output JSON contains the expected keys.
+    Retries the call if validation fails.
+    """
+    for attempt in range(retries):
+        result = llm_function(messages)
+        content = result.content
+        try:
+            output_json = json.loads(content)
+            if all(key in output_json for key in expected_keys):
+                return output_json
+            else:
+                print(f"Validation failed: missing keys in {output_json}. Attempt {attempt+1} of {retries}")
+        except json.JSONDecodeError:
+            print(f"JSON decode error on attempt {attempt+1} of {retries}. Raw output: {content}")
+        time.sleep(delay)
+    raise ValueError("LLM output did not meet expected structure after retries.")
 from langgraph.graph import START, END, StateGraph
 
 from ollama_deep_researcher.configuration import Configuration, SearchAPI
