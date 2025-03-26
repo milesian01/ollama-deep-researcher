@@ -234,29 +234,24 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
             format="json"
         )
     
-    result = llm_json_mode.invoke(
-        [SystemMessage(content=reflection_instructions.format(research_topic=state.research_topic)),
-        HumanMessage(content=f"Reflect on our existing knowledge: \n === \n {state.running_summary}, \n === \n And now identify a knowledge gap and generate a follow-up web search query:")]
-    )
-    
-    # Strip thinking tokens if configured
+    messages = [
+        SystemMessage(content=reflection_instructions.format(research_topic=state.research_topic)),
+        HumanMessage(content=f"Reflect on our existing knowledge: \n === \n {state.running_summary}, \n === \n And now identify a knowledge gap and generate a follow-up web search query:")
+    ]
+
     try:
-        # Try to parse as JSON first
-        # Log raw content before parsing
-        print("📡 Reflection step complete. Raw content:")
-        print(result.content[:300])  # just a preview
-        
-        # Try to parse as JSON first
-        reflection_content = json.loads(result.content)
-        # Get the follow-up query
+        reflection_content = call_llm_with_retries(
+            llm_function=lambda msgs: llm_json_mode.invoke(msgs),
+            messages=messages,
+            expected_keys=["follow_up_query"],
+            retries=3,
+            delay=1
+        )
         query = reflection_content.get('follow_up_query')
-        # Check if query is None or empty
         if not query:
-            # Use a fallback query
             return {"search_query": f"Tell me more about {state.research_topic}"}
         return {"search_query": query}
-    except (json.JSONDecodeError, KeyError, AttributeError):
-        # If parsing fails or the key is not found, use a fallback query
+    except ValueError:
         return {"search_query": f"Tell me more about {state.research_topic}"}
         
 def finalize_summary(state: SummaryState):
