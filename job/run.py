@@ -1,12 +1,12 @@
 def strip_thinking_tokens(text: str) -> str:
     """
     Remove  and  tags and their content from the text.
-    
+
     Iteratively removes all occurrences of content enclosed in thinking tokens.
-    
+
     Args:
         text (str): The text to process
-        
+
     Returns:
         str: The text with thinking tokens and their content removed
     """
@@ -15,6 +15,7 @@ def strip_thinking_tokens(text: str) -> str:
         end = text.find("ACTIONS") + len("ACTIONS")
         text = text[:start] + text[end:]
     return text
+
 
 import os
 import requests
@@ -51,7 +52,7 @@ if not file_title or any(c in file_title for c in r'\/:*?"<>|'):
 # Sanitize the title (replace spaces with underscores)
 file_title = file_title.replace(" ", "_")
 # Truncate if filename is too long
-max_filename_length = 100  
+max_filename_length = 100
 file_title = file_title[:max_filename_length]
 
 # Define the output directory relative to this script's location
@@ -86,12 +87,12 @@ response.raise_for_status()
 print("Initial response received; starting streaming loop")
 
 print("Streaming run output:")
-    
+
 with open(output_filename, "w") as f:
     print("Entering while loop for streaming response")
     # Starting with query: '"args.query value"'
-    print(f"Processing query: \"{args.query}\"") 
-    
+    print(f"Processing query: \"{args.query}\"")
+
     prev_status = None
     while True:
         for line in response.iter_lines():
@@ -116,7 +117,8 @@ with open(output_filename, "w") as f:
                 continue
 
             # Check for a pause condition: either a dedicated pause signal or a GraphRecursionError
-            if isinstance(obj, dict) and (obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
+            if isinstance(obj, dict) and (
+                    obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
                 print("Recursion limit reached. Resuming automatically...")
                 resume_command = {"resume": True}
                 response = requests.post(url, json={
@@ -181,7 +183,7 @@ print("🧾 Checking for running_summary content...")
 print(f"Summary present? {'Yes' if running_summary else 'No'}")
 if running_summary:
     print("Contains '### Sources:'?", '### Sources:' in running_summary)
-    
+
 if running_summary:
     md_filename = output_filename.replace(".jsonl", "_final_summary.md")
     with open(md_filename, "w", encoding="utf-8") as out:
