@@ -105,7 +105,7 @@ with open(output_filename, "w") as f:
                     "graph": "ollama_deep_researcher",
                     "input": resume_command,
                     "config": {
-                        "recursion_limit": 1599  # use same limit or adjust if desired
+                        "recursion_limit": 3  # use same limit or adjust if desired
                     },
                     "temporary": True
                 }, stream=True)
