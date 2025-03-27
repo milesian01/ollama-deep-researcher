@@ -1,3 +1,21 @@
+def strip_thinking_tokens(text: str) -> str:
+    """
+    Remove  and  tags and their content from the text.
+    
+    Iteratively removes all occurrences of content enclosed in thinking tokens.
+    
+    Args:
+        text (str): The text to process
+        
+    Returns:
+        str: The text with thinking tokens and their content removed
+    """
+    while "ACTIONS" in text and "ACTIONS" in text:
+        start = text.find("ACTIONS")
+        end = text.find("ACTIONS") + len("ACTIONS")
+        text = text[:start] + text[end:]
+    return text
+
 import os
 import requests
 import json
@@ -15,7 +33,7 @@ args = parser.parse_args()
 ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
 title_url = f"{ollama_base_url}/api/generate"
 title_payload = {
-    "model": "gemma3:27b-it-q8_0",
+    "model": "deepResearch-ds-r1_70b_dr_13k:latest",
     "prompt": f"Generate a short filename (no explanation) for the research topic: '{args.query}'. DO NOT include any reference to dates, months, or years. Use US file naming conventions. Output ONLY the filename, using only letters, numbers, hyphens, or underscores, with no spaces or extra punctuation.",
     "stream": False
 }
@@ -24,6 +42,7 @@ title_response = requests.post(title_url, headers=title_headers, json=title_payl
 title_response.raise_for_status()
 title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
+raw_response = strip_thinking_tokens(raw_response)
 # Extract first line, sanitize, and fallback if needed
 first_line = raw_response.splitlines()[0].strip()
 file_title = first_line.replace(" ", "_")
