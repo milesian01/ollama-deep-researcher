@@ -67,7 +67,12 @@ response.raise_for_status()
 print("Initial response received; starting streaming loop")
 
 print("Streaming run output:")
+    
 with open(output_filename, "w") as f:
+    print("Entering while loop for streaming response")
+    # Starting with query: '"args.query value"'
+    print(f"Processing query: \"{args.query}\"") 
+    
     prev_status = None
     while True:
         for line in response.iter_lines():
