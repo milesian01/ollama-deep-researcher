@@ -1,6 +1,8 @@
 .aider*
 .langgraph_api/
 job/_output/
+job/prompts/
 ollama_deep_researcher.egg-info/
 src/ollama_deep_researcher/__pycache__/
+repomix-output.xml
 job/job_queue.db
