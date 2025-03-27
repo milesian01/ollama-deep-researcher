@@ -52,3 +52,8 @@ async def run_graph(input_data: GraphInput, request: Request):
         result = compiled_graph.invoke(input_state, config=config)
 
     return result
+
+if __name__ == "__main__":
+    # Debug mode: Run with uvicorn directly for development
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
