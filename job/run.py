@@ -4,10 +4,6 @@ import json
 import argparse
 import time
 from datetime import datetime
-import uuid
-from langgraph.types import Command
-
-thread_id = str(uuid.uuid4())
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
@@ -58,49 +54,32 @@ payload = {
         "research_topic": args.query
     },
     "config": {
-        "configurable": {"thread_id": thread_id},
-        "recursion_limit": 100  # Reduced to force pause for testing
+        "recursion_limit": 1599
     },
     "temporary": True
 }
 
 start_time = time.time()
-try:
-    # Initial request
-    response = requests.post(url, json=payload, stream=True)
-except Exception as e:
-    print("Graph paused due to recursion limit. Resuming automatically...")
-    
-    # Create resume command
-    resume_command = Command(resume=True)
-    response = requests.post(url, json={
-        "assistant_id": "ollama_deep_researcher",
-        "graph": "ollama_deep_researcher",
-        "input": resume_command,
-        "config": {
-            "configurable": {"thread_id": thread_id}
-        },
-        "temporary": True
-    }, stream=True)
+# Send the request
+response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
 
 print("Streaming run output:")
 with open(output_filename, "w") as f:
     prev_status = None
-    while True:
-        # Process each line from the current response stream
-        for line in response.iter_lines():
-            if not line:
-                continue
+    for line in response.iter_lines():
+        if line:
             decoded = line.decode("utf-8")
             print(f"Raw line: {decoded}")  # Debug print
-
             # Skip heartbeat and event lines
-            if decoded.startswith(":") or decoded.startswith("event:"):
+            if decoded.startswith(":"):
+                print("Skipping heartbeat line")
                 continue
-
+            elif decoded.startswith("event:"):
+                print("Skipping event line:", decoded)
+                continue
             # Remove "data:" prefix if present
-            if decoded.startswith("data:"):
+            elif decoded.startswith("data:"):
                 decoded = decoded[len("data:"):].strip()
 
             try:
@@ -110,35 +89,14 @@ with open(output_filename, "w") as f:
                 print("Non-JSON data:", decoded)
                 continue
 
-            # --- New code: Check for pause signal ---
-            if isinstance(obj, dict) and obj.get("pause_reason") == "recursion_limit":
-                print("Recursion limit reached. Resuming automatically...")
-                resume_command = Command(resume=True)
-                response = requests.post(url, json={
-                    "assistant_id": "ollama_deep_researcher",
-                    "graph": "ollama_deep_researcher",
-                    "input": resume_command,
-                    "config": {
-                        "configurable": {"thread_id": thread_id}
-                    },
-                    "temporary": True
-                }, stream=True)
-                # Break out of the for-loop to restart processing from the new stream
-                break
-            # --- End new code ---
-
-            # Write the valid JSON object to file
             f.write(json.dumps(obj) + "\n")
             f.flush()
             os.fsync(f.fileno())
-
             # Print status updates if available (only on change)
-            if "status" in obj and obj["status"] != prev_status:
-                print(f"Status update: {obj['status']}")
-                prev_status = obj["status"]
-        else:
-            # If the inner loop completes normally without a break, then exit the while loop
-            break
+            if "status" in obj:
+                if obj["status"] != prev_status:
+                    print(f"Status update: {obj['status']}")
+                    prev_status = obj["status"]
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
 duration_seconds = end_time - start_time
