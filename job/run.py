@@ -21,10 +21,10 @@ import os
 import requests
 import json
 import argparse
-import json
 import time
 from datetime import datetime
 from dataclasses import asdict
+from langgraph.types import Command
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
