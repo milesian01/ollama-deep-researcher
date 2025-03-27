@@ -115,8 +115,8 @@ with open(output_filename, "w") as f:
                 print("Non-JSON data:", decoded)
                 continue
 
-            # Check for the pause signal due to recursion limit
-            if isinstance(obj, dict) and obj.get("pause_reason") == "recursion_limit":
+            # Check for a pause condition: either a dedicated pause signal or a GraphRecursionError
+            if isinstance(obj, dict) and (obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
                 print("Recursion limit reached. Resuming automatically...")
                 resume_command = Command(resume=True)
                 response = requests.post(url, json={
