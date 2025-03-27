@@ -26,6 +26,7 @@ def call_llm_with_retries(llm_function, messages, expected_keys, retries=3, dela
         time.sleep(delay)
     raise ValueError("LLM output did not meet expected structure after retries.")
 from langgraph.graph import START, END, StateGraph
+from langgraph.checkpoint.memory import MemorySaver
 
 from ollama_deep_researcher.configuration import Configuration, SearchAPI
 from ollama_deep_researcher.utils import deduplicate_and_format_sources, tavily_search, format_sources, perplexity_search, duckduckgo_search, searxng_search, strip_thinking_tokens, get_config_value
@@ -330,4 +331,5 @@ builder.add_edge("summarize_sources", "reflect_on_summary")
 builder.add_conditional_edges("reflect_on_summary", route_research)
 builder.add_edge("finalize_summary", END)
 
-graph = builder.compile()
+checkpointer = MemorySaver()
+graph = builder.compile(checkpointer=checkpointer)
