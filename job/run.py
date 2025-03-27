@@ -24,6 +24,7 @@ import argparse
 import json
 import time
 from datetime import datetime
+from dataclasses import asdict
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
@@ -130,7 +131,7 @@ with open(output_filename, "w") as f:
                 response = requests.post(url, json={
                     "assistant_id": "ollama_deep_researcher",
                     "graph": "ollama_deep_researcher", 
-                    "input": resume_command.dict(),  # Use .dict() to properly serialize
+                    "input": asdict(resume_command),
                     "config": {
                         "configurable": {"thread_id": thread_id},
                         "recursion_limit": 3
