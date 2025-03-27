@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import argparse
+from langgraph.types import Command
 import time
 from datetime import datetime
 
@@ -67,19 +68,19 @@ response.raise_for_status()
 print("Streaming run output:")
 with open(output_filename, "w") as f:
     prev_status = None
-    for line in response.iter_lines():
-        if line:
+    while True:
+        for line in response.iter_lines():
+            if not line:
+                continue
             decoded = line.decode("utf-8")
             print(f"Raw line: {decoded}")  # Debug print
+
             # Skip heartbeat and event lines
-            if decoded.startswith(":"):
-                print("Skipping heartbeat line")
+            if decoded.startswith(":") or decoded.startswith("event:"):
                 continue
-            elif decoded.startswith("event:"):
-                print("Skipping event line:", decoded)
-                continue
+
             # Remove "data:" prefix if present
-            elif decoded.startswith("data:"):
+            if decoded.startswith("data:"):
                 decoded = decoded[len("data:"):].strip()
 
             try:
@@ -89,14 +90,33 @@ with open(output_filename, "w") as f:
                 print("Non-JSON data:", decoded)
                 continue
 
+            # Check for the pause signal due to recursion limit
+            if isinstance(obj, dict) and obj.get("pause_reason") == "recursion_limit":
+                print("Recursion limit reached. Resuming automatically...")
+                # Issue a resume command
+                resume_command = Command(resume=True)
+                response = requests.post(url, json={
+                    "assistant_id": "ollama_deep_researcher",
+                    "graph": "ollama_deep_researcher",
+                    "input": resume_command,
+                    "config": {
+                        "recursion_limit": 1599  # use same limit or adjust if desired
+                    },
+                    "temporary": True
+                }, stream=True)
+                # Break out of the for-loop to process the new stream
+                break
+
             f.write(json.dumps(obj) + "\n")
             f.flush()
             os.fsync(f.fileno())
-            # Print status updates if available (only on change)
-            if "status" in obj:
-                if obj["status"] != prev_status:
-                    print(f"Status update: {obj['status']}")
-                    prev_status = obj["status"]
+
+            if "status" in obj and obj["status"] != prev_status:
+                print(f"Status update: {obj['status']}")
+                prev_status = obj["status"]
+        else:
+            # If the inner for-loop completes normally, exit the while-loop
+            break
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
 duration_seconds = end_time - start_time
