@@ -93,7 +93,6 @@ with open(output_filename, "w") as f:
             # Check for the pause signal due to recursion limit
             if isinstance(obj, dict) and obj.get("pause_reason") == "recursion_limit":
                 print("Recursion limit reached. Resuming automatically...")
-                # Issue a resume command
                 resume_command = Command(resume=True)
                 response = requests.post(url, json={
                     "assistant_id": "ollama_deep_researcher",
@@ -115,7 +114,7 @@ with open(output_filename, "w") as f:
                 print(f"Status update: {obj['status']}")
                 prev_status = obj["status"]
         else:
-            # If the inner for-loop completes normally, exit the while-loop
+            # If the inner for-loop completes normally, exit the while-loop.
             break
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
