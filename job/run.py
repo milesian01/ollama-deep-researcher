@@ -127,10 +127,10 @@ with open(output_filename, "w") as f:
                 print("Recursion limit reached. Resuming automatically...")
                 from langgraph.types import Command  # Ensure this is at the top
                 resume_command = Command(resume=True)
-                response = requests.post(url, json={
+                response = requests.post(url, json{
                     "assistant_id": "ollama_deep_researcher",
                     "graph": "ollama_deep_researcher", 
-                    "input": resume_command.__dict__,
+                    "input": resume_command.dict(),
                     "config": {
                         "configurable": {"thread_id": thread_id},
                         "recursion_limit": 3
