@@ -74,7 +74,7 @@ payload = {
         "research_topic": args.query
     },
     "config": {
-        "recursion_limit": 1599
+        "recursion_limit": 3
     },
     "temporary": True
 }
