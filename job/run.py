@@ -20,7 +20,7 @@ import os
 import requests
 import json
 import argparse
-from langgraph.types import Command
+import json
 import time
 from datetime import datetime
 
@@ -118,11 +118,11 @@ with open(output_filename, "w") as f:
             # Check for a pause condition: either a dedicated pause signal or a GraphRecursionError
             if isinstance(obj, dict) and (obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
                 print("Recursion limit reached. Resuming automatically...")
-                resume_command = Command(resume=True)
+                resume_command = {"resume": True}
                 response = requests.post(url, json={
                     "assistant_id": "ollama_deep_researcher",
                     "graph": "ollama_deep_researcher",
-                    "input": resume_command.dict(),
+                    "input": resume_command,
                     "config": {
                         "recursion_limit": 3  # use same limit or adjust if desired
                     },
