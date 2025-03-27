@@ -64,6 +64,7 @@ start_time = time.time()
 # Send the request
 response = requests.post(url, json=payload, stream=True)
 response.raise_for_status()
+print("Initial response received; starting streaming loop")
 
 print("Streaming run output:")
 with open(output_filename, "w") as f:
