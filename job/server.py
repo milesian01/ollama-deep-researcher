@@ -1,9 +1,15 @@
+# === Model Definitions ===
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import Optional
-from langgraph.types import Command
-from src.ollama_deep_researcher.graph import builder
+
+# For model definitions only
+# === Graph Setup ===
+from langgraph.types import Command  # For graph commands
+from src.ollama_deep_researcher.graph import builder  
 from langgraph.checkpoint.memory import MemorySaver
+
+# Initialize global variables before app creation
 
 # === Step 1: Initialize App and Globals ===
 app = FastAPI()
