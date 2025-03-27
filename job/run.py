@@ -68,6 +68,10 @@ output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}.jsonl")
 url = "http://192.168.50.250:2024/runs/stream"
 
 # Input payload
+# Generate unique thread ID for state management
+import uuid
+thread_id = str(uuid.uuid4())
+
 payload = {
     "assistant_id": "ollama_deep_researcher",
     "graph": "ollama_deep_researcher",
@@ -75,6 +79,7 @@ payload = {
         "research_topic": args.query
     },
     "config": {
+        "configurable": {"thread_id": thread_id},
         "recursion_limit": 3
     },
     "temporary": True
@@ -126,7 +131,8 @@ with open(output_filename, "w") as f:
                     "graph": "ollama_deep_researcher",
                     "input": resume_command,
                     "config": {
-                        "recursion_limit": 3  # use same limit or adjust if desired
+                        "configurable": {"thread_id": thread_id},
+                        "recursion_limit": 3
                     },
                     "temporary": True
                 }, stream=True)
