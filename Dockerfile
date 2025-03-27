@@ -29,11 +29,4 @@ EXPOSE 2024
 
 # 5) Launch the assistant with the LangGraph dev server:
 #    Equivalent to the quickstart: uvx --refresh --from "langgraph-cli[inmem]" --with-editable . --python 3.11 langgraph dev
-CMD ["uvx", \
-     "--refresh", \
-     "--from", "langgraph-cli[inmem]", \
-     "--with-editable", ".", \
-     "--python", "3.11", \
-     "langgraph", \
-     "dev", \
-     "--host", "0.0.0.0"]
+CMD ["uvicorn", "job.server:app", "--host", "0.0.0.0", "--port", "8000"]
