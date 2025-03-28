@@ -127,12 +127,7 @@ while True:
                 if decoded.startswith("data:"):
                     decoded = decoded[len("data:"):].strip()
 
-                try:
-                    obj = json.loads(decoded)
-                except json.JSONDecodeError as e:
-                    print("JSON decode error:", e)
-                    print("Non-JSON data:", decoded)
-                    continue
+                obj = json.loads(decoded)
 
                 with open("_loop_log.jsonl", "a") as loop_log:
                     loop_log.write(json.dumps(obj) + "\n")
