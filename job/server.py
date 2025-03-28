@@ -43,8 +43,7 @@ async def run_graph(input_data: GraphInput, request: Request):
     if input_data.resume:
         print("🔄 Resuming graph...")
         body = await request.json()
-        resume_input = body.get("input", Command(resume=True).dict())
-        print(f"📦 Resume input: {resume_input}")
+        print(f"📦 Resume input: {body.get('input', {})}")
         try:
             result = compiled_graph.invoke(resume_input, config=config)
         except Exception as e:
