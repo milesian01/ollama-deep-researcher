@@ -80,8 +80,9 @@ resume_mode = args.query.strip().lower() == "resume"
 
 if resume_mode:
     resume_command = Command(resume=True)
+    print(f"🔄 Resuming with thread_id: {thread_id} and limit: {RECURSION_LIMIT}")
     payload = {
-        "input": resume_command.dict(),
+        "input": resume_command,
         "resume": True,
         "thread_id": thread_id,
         "recursion_limit": RECURSION_LIMIT
@@ -135,7 +136,7 @@ while True:
                 print("Recursion limit reached. Resuming automatically...")
                 resume_command = Command(resume=True)
                 payload = {
-                    "input": resume_command.dict(),
+                    "input": resume_command,
                     "resume": True,
                     "thread_id": thread_id,
                     "recursion_limit": RECURSION_LIMIT
