@@ -45,6 +45,8 @@ async def run_graph(input_data: GraphInput, request: Request):
         body = await request.json()
         print(f"📦 Resume input: {body.get('input', {})}")
         try:
+            resume_command = Command(resume=True)
+            resume_input = body.get("input", asdict(resume_command))
             result = compiled_graph.invoke(resume_input, config=config)
         except Exception as e:
             return {"error": type(e).__name__, "message": str(e)}
