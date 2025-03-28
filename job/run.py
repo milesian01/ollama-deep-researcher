@@ -34,7 +34,7 @@ args = parser.parse_args()
 ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
 title_url = f"{ollama_base_url}/api/generate"
 title_payload = {
-    "model": "deepResearch-ds-r1_70b_dr_13k:latest",
+    "model": os.getenv("LOCAL_LLM", "deepResearch-ds-r1_70b_dr_13k"),
     "prompt": f"Generate a short filename (no explanation) for the research topic: '{args.query}'. DO NOT include any reference to dates, months, or years. Use US file naming conventions. Output ONLY the filename, using only letters, numbers, hyphens, or underscores, with no spaces or extra punctuation.",
     "stream": False
 }
