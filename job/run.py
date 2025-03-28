@@ -147,6 +147,8 @@ with open(output_filename, "w") as f:
                     "recursion_limit": 3
                 })
                 response = requests.post(url, json={
+                    "assistant_id": "ollama_deep_researcher",
+                    "graph": "ollama_deep_researcher",
                     "input": resume_command.dict(),
                     "resume": True,
                     "thread_id": thread_id,
