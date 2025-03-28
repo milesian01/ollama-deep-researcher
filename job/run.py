@@ -136,7 +136,7 @@ while True:
                 print("Recursion limit reached. Resuming automatically...")
                 resume_command = Command(resume=True)
                 payload = {
-                    "input": resume_command,
+                    "input": resume_command.model_dump(),
                     "resume": True,
                     "thread_id": thread_id,
                     "recursion_limit": RECURSION_LIMIT
