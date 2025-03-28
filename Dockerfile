@@ -34,6 +34,8 @@ ENV OLLAMA_BASE_URL="http://localhost:11434/"
 # 4) Expose the port that LangGraph dev server uses (default: 2024)
 EXPOSE 8000
 
+ENV PYTHONPATH=/app/src
+
 # 5) Launch the assistant with the LangGraph dev server:
 #    Equivalent to the quickstart: uvx --refresh --from "langgraph-cli[inmem]" --with-editable . --python 3.11 langgraph dev
 CMD ["uvicorn", "job.server:app", "--host", "0.0.0.0", "--port", "8000"]
