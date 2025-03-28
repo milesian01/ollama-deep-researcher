@@ -73,16 +73,10 @@ import hashlib
 thread_id = hashlib.md5(args.query.encode()).hexdigest()
 
 payload = {
-    "assistant_id": "ollama_deep_researcher",
-    "graph": "ollama_deep_researcher",
-    "input": {
-        "research_topic": args.query
-    },
-    "config": {
-        "configurable": {"thread_id": thread_id},
-        "recursion_limit": 3
-    },
-    "temporary": True
+    "research_topic": args.query,
+    "resume": False,
+    "thread_id": thread_id,
+    "recursion_limit": 3
 }
 
 start_time = time.time()
@@ -128,14 +122,10 @@ with open(output_filename, "w") as f:
                 from langgraph.types import Command  # Ensure this is at the top
                 resume_command = Command(resume=True)
                 response = requests.post(url, json={
-                    "assistant_id": "ollama_deep_researcher",
-                    "graph": "ollama_deep_researcher", 
-                    "input": resume_command.dict(),
-                    "config": {
-                        "configurable": {"thread_id": thread_id},
-                        "recursion_limit": 3
-                    },
-                    "temporary": True
+                    "research_topic": None,
+                    "resume": True,
+                    "thread_id": thread_id,
+                    "recursion_limit": 3
                 }, stream=True)
                 # Break out of the for-loop to process the new stream
                 break
