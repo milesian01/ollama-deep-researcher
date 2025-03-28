@@ -72,6 +72,24 @@ url = "http://192.168.50.250:8000/run"
 import hashlib
 thread_id = hashlib.md5(args.query.encode()).hexdigest()
 
+resume_mode = args.query.strip().lower() == "resume"
+
+if resume_mode:
+    resume_command = Command(resume=True)
+    payload = {
+        "input": resume_command.dict(),
+        "resume": True,
+        "thread_id": thread_id,
+        "recursion_limit": 3
+    }
+else:
+    payload = {
+        "research_topic": args.query,
+        "resume": False,
+        "thread_id": thread_id,
+        "recursion_limit": 3
+    }
+
 payload = {
     "research_topic": args.query,
     "resume": False,
