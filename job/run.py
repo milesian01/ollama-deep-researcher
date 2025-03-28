@@ -82,7 +82,7 @@ if resume_mode:
     resume_command = Command(resume=True)
     print(f"🔄 Resuming with thread_id: {thread_id} and limit: {RECURSION_LIMIT}")
     payload = {
-        "input": resume_command,
+        "input": vars(resume_command),
         "resume": True,
         "thread_id": thread_id,
         "recursion_limit": RECURSION_LIMIT
