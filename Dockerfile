@@ -17,8 +17,11 @@ ENV PATH="/root/.local/bin:${PATH}"
 COPY . /app
 
 # 2.5) Install Python dependencies
-RUN pip install --no-cache-dir requests \
-    && pip install --no-cache-dir langgraph
+RUN pip install --no-cache-dir \
+    requests \
+    langgraph \
+    uvicorn[standard] \
+    fastapi
 
 # 3) Provide default environment variables to point to Ollama (running elsewhere)
 #    Adjust the OLLAMA_URL to match your actual Ollama container or service.
