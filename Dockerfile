@@ -25,7 +25,8 @@ RUN pip install --no-cache-dir \
     langchain-core \
     langchain-openai \
     langchain-community \
-    langchain-ollama
+    langchain-ollama \
+    markdownify
 
 # 3) Provide default environment variables to point to Ollama (running elsewhere)
 #    Adjust the OLLAMA_URL to match your actual Ollama container or service.
