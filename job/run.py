@@ -67,6 +67,9 @@ if not os.path.exists(output_dir):
 timestamp = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
 output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}.jsonl")
 
+# Check if this is a resume run
+is_resume_run = os.path.exists(output_filename)
+
 # Target LangGraph streaming endpoint
 url = "http://192.168.50.250:8000/run/stream"
 
@@ -109,7 +112,7 @@ while True:
 
     print("Streaming run output:")
 
-    with open(output_filename, "a") as f:
+    with open(output_filename, "a" if is_resume_run else "w") as f:
         print("Entering while loop for streaming response")
         print(f"Processing query: \"{args.query}\"")
 
