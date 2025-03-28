@@ -135,7 +135,7 @@ while True:
                 payload = {
                     "assistant_id": "ollama_deep_researcher",
                     "graph": "ollama_deep_researcher",
-                    "input": resume_command.dict(),
+                    "input": asdict(resume_command),
                     "resume": True,
                     "thread_id": thread_id,
                     "recursion_limit": 3
