@@ -83,9 +83,13 @@ async def stream_graph(input_data: GraphInput, request: Request):
         stream = compiled_graph.iter_events(input_state, config=config)
 
     async def event_stream():
-        for step in stream:
-            await asyncio.sleep(0.001)  # Yield control
-            yield f"data: {json.dumps(step)}\n\n"
+        try:
+            for step in stream:
+                yield f"data: {json.dumps(step)}\n\n"
+                await asyncio.sleep(0)
+        except Exception as e:
+            print(f"⚠️ Stream error: {e}")
+            yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
