@@ -256,6 +256,7 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
             delay=1
         )
         query = reflection_content.get('follow_up_query')
+        print(f"💡 Reflection generated follow-up query: {query}")
         if not query:
             return {"search_query": f"Tell me more about {state.research_topic}"}
         return {"search_query": query}
@@ -340,5 +341,3 @@ builder.add_edge("finalize_summary", END)
 
 checkpointer = MemorySaver()
 graph = builder.compile(checkpointer=checkpointer)
-import json
-import json
