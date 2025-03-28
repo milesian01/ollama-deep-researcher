@@ -17,7 +17,9 @@ def strip_thinking_tokens(text: str) -> str:
     return text
 
 
-from dataclasses import asdict
+# Configuration for graph step depth
+RECURSION_LIMIT = 6  # Adjust this as needed for testing or production
+
 import os
 import requests
 import json
@@ -79,17 +81,17 @@ resume_mode = args.query.strip().lower() == "resume"
 if resume_mode:
     resume_command = Command(resume=True)
     payload = {
-        "input": asdict(resume_command),
+        "input": resume_command.dict(),
         "resume": True,
         "thread_id": thread_id,
-        "recursion_limit": 3
+        "recursion_limit": RECURSION_LIMIT
     }
 else:
     payload = {
         "research_topic": args.query,
         "resume": False,
         "thread_id": thread_id,
-        "recursion_limit": 3
+        "recursion_limit": RECURSION_LIMIT
     }
 
 start_time = time.time()
@@ -133,12 +135,10 @@ while True:
                 print("Recursion limit reached. Resuming automatically...")
                 resume_command = Command(resume=True)
                 payload = {
-                    "assistant_id": "ollama_deep_researcher",
-                    "graph": "ollama_deep_researcher",
-                    "input": asdict(resume_command),
+                    "input": resume_command.dict(),
                     "resume": True,
                     "thread_id": thread_id,
-                    "recursion_limit": 3
+                    "recursion_limit": RECURSION_LIMIT
                 }
                 break  # 🔁 Restart outer while loop with updated payload
 
