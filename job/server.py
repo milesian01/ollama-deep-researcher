@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from typing import Optional
+from dataclasses import asdict
 
 # For model definitions only
 # === Graph Setup ===
