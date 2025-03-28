@@ -18,7 +18,9 @@ def strip_thinking_tokens(text: str) -> str:
 
 
 # Configuration for graph step depth
-MAX_WEB_RESEARCH_LOOPS = 40
+import os
+
+MAX_WEB_RESEARCH_LOOPS = int(os.getenv("MAX_WEB_RESEARCH_LOOPS", "40"))
 RECURSION_LIMIT = MAX_WEB_RESEARCH_LOOPS * 6 + 1  # Always allows one complete final loop
 
 import os
@@ -79,6 +81,7 @@ url = "http://192.168.50.250:8000/run/stream"
 import hashlib
 thread_id = hashlib.md5(args.query.encode()).hexdigest()
 print(f"🧵 Using thread_id: {thread_id}")
+print(f"🔢 Max loops from env: {MAX_WEB_RESEARCH_LOOPS}, Recursion limit: {RECURSION_LIMIT}")
 print(f"🔢 Max loops: {MAX_WEB_RESEARCH_LOOPS}, Recursion limit: {RECURSION_LIMIT}")
 
 resume_mode = args.query.strip().lower() == "resume"
