@@ -69,8 +69,8 @@ url = "http://192.168.50.250:8000/run"
 
 # Input payload
 # Generate unique thread ID for state management
-import uuid
-thread_id = str(uuid.uuid4())
+import hashlib
+thread_id = hashlib.md5(args.query.encode()).hexdigest()
 
 payload = {
     "assistant_id": "ollama_deep_researcher",
