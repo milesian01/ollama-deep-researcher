@@ -62,6 +62,32 @@ async def run_graph(input_data: GraphInput, request: Request):
 
     return result
 
+from fastapi.responses import StreamingResponse
+import asyncio
+
+@app.post("/run/stream")
+async def stream_graph(input_data: GraphInput, request: Request):
+    global compiled_graph
+
+    config = {
+        "configurable": {"thread_id": input_data.thread_id},
+        "recursion_limit": input_data.recursion_limit or 25
+    }
+
+    if input_data.resume:
+        command = Command(resume=True)
+        stream = compiled_graph.stream(command, config=config)
+    else:
+        input_state = {"research_topic": input_data.research_topic}
+        stream = compiled_graph.stream(input_state, config=config)
+
+    async def event_stream():
+        for step in stream:
+            await asyncio.sleep(0.001)  # Yield control
+            yield f"data: {json.dumps(step)}\n\n"
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
+
 if __name__ == "__main__":
     # Debug mode: Run with uvicorn directly for development
     import uvicorn

@@ -68,7 +68,7 @@ timestamp = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
 output_filename = os.path.join(output_dir, f"{timestamp}_{file_title}.jsonl")
 
 # Target LangGraph streaming endpoint
-url = "http://192.168.50.250:8000/run"
+url = "http://192.168.50.250:8000/run/stream"
 
 # Input payload
 # Generate unique thread ID for state management
@@ -143,6 +143,8 @@ while True:
                 }
                 break  # 🔁 Restart outer while loop with updated payload
 
+            with open("_loop_log.jsonl", "a") as loop_log:
+                loop_log.write(json.dumps(obj) + "\n")
             f.write(json.dumps(obj) + "\n")
             f.flush()
             os.fsync(f.fileno())
