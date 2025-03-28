@@ -95,6 +95,9 @@ start_time = time.time()
 # Send the request
 while True:
     response = requests.post(url, json=payload, stream=True)
+    if response.status_code != 200:
+        print("❌ Server returned error status:", response.status_code)
+        print("❌ Response body:", response.text)
     response.raise_for_status()
     print("Initial response received; starting streaming loop")
 

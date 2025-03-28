@@ -45,12 +45,18 @@ async def run_graph(input_data: GraphInput, request: Request):
         body = await request.json()
         resume_input = body.get("input", Command(resume=True).dict())
         print(f"📦 Resume input: {resume_input}")
-        result = compiled_graph.invoke(resume_input, config=config)
+        try:
+            result = compiled_graph.invoke(resume_input, config=config)
+        except Exception as e:
+            return {"error": type(e).__name__, "message": str(e)}
     else:
         # Start a new run with initial research topic
         print(f"🚀 Starting new graph run with topic: {input_data.research_topic}")
         input_state = {"research_topic": input_data.research_topic}
-        result = compiled_graph.invoke(input_state, config=config)
+        try:
+            result = compiled_graph.invoke(input_state, config=config)
+        except Exception as e:
+            return {"error": type(e).__name__, "message": str(e)}
 
     return result
 
