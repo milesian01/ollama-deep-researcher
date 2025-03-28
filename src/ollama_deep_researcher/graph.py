@@ -133,7 +133,10 @@ def web_research(state: SummaryState, config: RunnableConfig):
     else:
         raise ValueError(f"Unsupported search API: {configurable.search_api}")
 
-    return {"sources_gathered": [format_sources(search_results)], "research_loop_count": state.research_loop_count + 1, "web_research_results": [search_str]}
+    loop_num = state.research_loop_count + 1
+    print(f"🔁 Research loop count: {loop_num}")
+
+    return {"sources_gathered": [format_sources(search_results)], "research_loop_count": loop_num, "web_research_results": [search_str]}
 
 def summarize_sources(state: SummaryState, config: RunnableConfig):
     print("🧠 Node: summarize_sources")
