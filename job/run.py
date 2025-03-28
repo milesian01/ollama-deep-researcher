@@ -17,6 +17,7 @@ def strip_thinking_tokens(text: str) -> str:
     return text
 
 
+from dataclasses import asdict
 import os
 import requests
 import json
@@ -78,7 +79,7 @@ resume_mode = args.query.strip().lower() == "resume"
 if resume_mode:
     resume_command = Command(resume=True)
     payload = {
-        "input": resume_command.dict(),
+        "input": asdict(resume_command),
         "resume": True,
         "thread_id": thread_id,
         "recursion_limit": 3
