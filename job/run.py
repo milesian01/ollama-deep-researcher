@@ -91,13 +91,6 @@ else:
         "recursion_limit": 3
     }
 
-payload = {
-    "research_topic": args.query,
-    "resume": False,
-    "thread_id": thread_id,
-    "recursion_limit": 3
-}
-
 start_time = time.time()
 # Send the request
 response = requests.post(url, json=payload, stream=True)
