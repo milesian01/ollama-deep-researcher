@@ -64,6 +64,7 @@ async def run_graph(input_data: GraphInput, request: Request):
 
 from fastapi.responses import StreamingResponse
 import asyncio
+import json
 
 @app.post("/run/stream")
 async def stream_graph(input_data: GraphInput, request: Request):
