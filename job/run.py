@@ -132,7 +132,8 @@ while True:
 
                 obj = json.loads(decoded)
 
-                with open("_loop_log.jsonl", "a") as loop_log:
+                loop_log_path = output_filename.replace(".jsonl", "_loop_log.jsonl")
+                with open(loop_log_path, "a") as loop_log:
                     loop_log.write(json.dumps(obj) + "\n")
                 f.write(json.dumps(obj) + "\n")
                 f.flush()
@@ -141,6 +142,12 @@ while True:
                 if isinstance(obj, dict) and (
                     obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"
                 ):
+                    if obj.get("research_loop_count"):
+                        loop_log.write(json.dumps({
+                            "timestamp": datetime.now().isoformat(),
+                            "loop": obj["research_loop_count"],
+                            "event": "start_loop"
+                        }) + "\n")
                     print("Recursion limit reached. Resuming automatically...")
                     resume_command = Command(resume=True)
                     payload = {
