@@ -97,6 +97,8 @@ else:
 
 start_time = time.time()
 # Send the request
+resume_handled = False
+
 while True:
     response = requests.post(url, json=payload, stream=True)
     if response.status_code != 200:
@@ -138,32 +140,24 @@ while True:
                 f.flush()
                 os.fsync(f.fileno())
 
-                if "status" in obj and obj["status"] != prev_status:
-                    print(f"Status update: {obj['status']}")
-                    prev_status = obj["status"]
+                if isinstance(obj, dict) and (
+                    obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"
+                ):
+                    print("Recursion limit reached. Resuming automatically...")
+                    resume_command = Command(resume=True)
+                    payload = {
+                        "input": vars(resume_command),
+                        "resume": True,
+                        "thread_id": thread_id,
+                        "recursion_limit": RECURSION_LIMIT
+                    }
+                    resume_handled = True
+                    break
+
         except requests.exceptions.ChunkedEncodingError:
             print("⚠️ Streaming connection ended unexpectedly.")
-            if not line:
-                continue
-            decoded = line.decode("utf-8")
-            print(f"Raw line: {decoded}")
-
-            if decoded.startswith(":") or decoded.startswith("event:"):
-                continue
-
-            if decoded.startswith("data:"):
-                decoded = decoded[len("data:"):].strip()
-
-            try:
-                obj = json.loads(decoded)
-            except json.JSONDecodeError as e:
-                print("JSON decode error:", e)
-                print("Non-JSON data:", decoded)
-                continue
-
-            if isinstance(obj, dict) and (
-                    obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
-                print("Recursion limit reached. Resuming automatically...")
+            if not resume_handled:
+                print("Trying to resume manually...")
                 resume_command = Command(resume=True)
                 payload = {
                     "input": vars(resume_command),
@@ -171,20 +165,10 @@ while True:
                     "thread_id": thread_id,
                     "recursion_limit": RECURSION_LIMIT
                 }
-                break  # 🔁 Restart outer while loop with updated payload
+                continue  # Retry with new payload
 
-            with open("_loop_log.jsonl", "a") as loop_log:
-                loop_log.write(json.dumps(obj) + "\n")
-            f.write(json.dumps(obj) + "\n")
-            f.flush()
-            os.fsync(f.fileno())
-
-            if "status" in obj and obj["status"] != prev_status:
-                print(f"Status update: {obj['status']}")
-                prev_status = obj["status"]
         else:
-            # No pause = normal finish, exit outer loop
-            break
+            break  # No pause or error — exit loop
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
 duration_seconds = end_time - start_time
