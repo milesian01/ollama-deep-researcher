@@ -71,6 +71,7 @@ url = "http://192.168.50.250:8000/run"
 # Generate unique thread ID for state management
 import hashlib
 thread_id = hashlib.md5(args.query.encode()).hexdigest()
+print(f"🧵 Using thread_id: {thread_id}")
 
 resume_mode = args.query.strip().lower() == "resume"
 
