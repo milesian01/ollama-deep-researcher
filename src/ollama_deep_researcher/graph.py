@@ -119,15 +119,19 @@ def web_research(state: SummaryState, config: RunnableConfig):
 
     # Search the web
     if search_api == "tavily":
+        print(f"🔎 Web searching for: {state.search_query}")
         search_results = tavily_search(state.search_query, fetch_full_page=configurable.fetch_full_page, max_results=1)
         search_str = deduplicate_and_format_sources(search_results, max_tokens_per_source=3000, fetch_full_page=configurable.fetch_full_page)
     elif search_api == "perplexity":
+        print(f"🔎 Web searching for: {state.search_query}")
         search_results = perplexity_search(state.search_query, state.research_loop_count)
         search_str = deduplicate_and_format_sources(search_results, max_tokens_per_source=3000, fetch_full_page=configurable.fetch_full_page)
     elif search_api == "duckduckgo":
+        print(f"🔎 Web searching for: {state.search_query}")
         search_results = duckduckgo_search(state.search_query, max_results=3, fetch_full_page=configurable.fetch_full_page)
         search_str = deduplicate_and_format_sources(search_results, max_tokens_per_source=3000, fetch_full_page=configurable.fetch_full_page)
     elif search_api == "searxng":
+        print(f"🔎 Web searching for: {state.search_query}")
         search_results = searxng_search(state.search_query, max_results=3, fetch_full_page=configurable.fetch_full_page)
         search_str = deduplicate_and_format_sources(search_results, max_tokens_per_source=3000, fetch_full_page=configurable.fetch_full_page)
     else:
