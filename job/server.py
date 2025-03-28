@@ -41,10 +41,11 @@ async def run_graph(input_data: GraphInput, request: Request):
     }
 
     if input_data.resume:
-        # Resume from prior checkpoint using the passed-in input
         print("🔄 Resuming graph...")
         body = await request.json()
-        result = compiled_graph.invoke(body["input"], config=config)
+        resume_input = body.get("input", Command(resume=True).dict())
+        print(f"📦 Resume input: {resume_input}")
+        result = compiled_graph.invoke(resume_input, config=config)
     else:
         # Start a new run with initial research topic
         print(f"🚀 Starting new graph run with topic: {input_data.research_topic}")
