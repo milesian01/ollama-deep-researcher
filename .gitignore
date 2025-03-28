@@ -6,3 +6,5 @@ ollama_deep_researcher.egg-info/
 src/ollama_deep_researcher/__pycache__/
 repomix-output.xml
 job/job_queue.db
+.idea/
+job/__pycache__/
