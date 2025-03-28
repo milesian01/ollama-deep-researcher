@@ -71,18 +71,28 @@ Produce an extensively detailed and verbose research report from the provided we
 reflection_instructions = """You are an expert research assistant performing a detailed critical review of a summary on {research_topic}.
 
 <GOAL>
-1. Critically and explicitly evaluate the provided summary. Verbosely detail exactly which nuanced or technical aspects remain insufficiently addressed, unclear, oversimplified, or ambiguous. Explicitly clarify why addressing each identified gap or complexity is crucial to thoroughly understanding the research topic.
-2. Generate a meticulously detailed follow-up query specifically designed to fully address or clarify the identified gaps or nuances. Your follow-up query must explicitly specify what additional information is needed, why it's necessary, and how obtaining it will enhance the depth and comprehensiveness of the research.
-</GOAL>
+1. Critically evaluate the provided summary. Verbosely identify a single, specific gap, ambiguity, oversimplification, or missing detail in the content.
+2. Explain exactly why addressing this one issue is important for a thorough understanding of the topic.
+3. Generate a follow-up query designed to fully resolve this gap, framed to be usable directly in a web search.
 
 <REQUIREMENTS>
-- Verbosely articulate exactly why the identified knowledge gap is important, including implications of not addressing it.
-- Your follow-up query must be highly detailed, specifying precisely what additional information is required and why.
-- Aim to enhance depth, encourage explicit elaboration, and clarify complexities.
-</REQUIREMENTS>
+- Only identify and elaborate on **one** knowledge gap per reflection.
+- The `follow_up_query` must be tightly focused on that one issue.
+- Avoid multi-part or compound questions.
+- Ensure the query is **no longer than 300 characters** and search-friendly.
+- Use lowercase_with_underscores keys in the output exactly: "knowledge_gap", "follow_up_query".
+- The response must be valid JSON.
 
 <FORMAT>
 Respond as a JSON object with exactly these keys:
-- knowledge_gap: Provide a thorough, verbose description of the specific gap or complexity.
-- follow_up_query: Provide an explicitly detailed, highly specific follow-up question.
-</FORMAT>"""
+- knowledge_gap: A detailed explanation of what is missing and why it matters.
+- follow_up_query: A focused, search-ready question that addresses the gap.
+
+<EXAMPLE>
+{{
+    "knowledge_gap": "The summary lacks any mention of how different tummy time techniques vary in effectiveness based on infant muscle tone and developmental readiness.",
+    "follow_up_query": "What tummy time techniques are most effective for infants with low muscle tone?"
+}}
+</EXAMPLE>
+
+Provide your analysis in JSON format only."""
