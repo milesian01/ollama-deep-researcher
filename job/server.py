@@ -77,10 +77,10 @@ async def stream_graph(input_data: GraphInput, request: Request):
 
     if input_data.resume:
         command = Command(resume=True)
-        stream = compiled_graph.stream(command, config=config)
+        stream = compiled_graph.iter_events(command, config=config)
     else:
         input_state = {"research_topic": input_data.research_topic}
-        stream = compiled_graph.stream(input_state, config=config)
+        stream = compiled_graph.iter_events(input_state, config=config)
 
     async def event_stream():
         for step in stream:

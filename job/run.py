@@ -112,7 +112,37 @@ while True:
         print(f"Processing query: \"{args.query}\"")
 
         prev_status = None
-        for line in response.iter_lines():
+        try:
+            for line in response.iter_lines():
+                if not line:
+                    continue
+                decoded = line.decode("utf-8")
+                print(f"Raw line: {decoded}")
+
+                if decoded.startswith(":") or decoded.startswith("event:"):
+                    continue
+
+                if decoded.startswith("data:"):
+                    decoded = decoded[len("data:"):].strip()
+
+                try:
+                    obj = json.loads(decoded)
+                except json.JSONDecodeError as e:
+                    print("JSON decode error:", e)
+                    print("Non-JSON data:", decoded)
+                    continue
+
+                with open("_loop_log.jsonl", "a") as loop_log:
+                    loop_log.write(json.dumps(obj) + "\n")
+                f.write(json.dumps(obj) + "\n")
+                f.flush()
+                os.fsync(f.fileno())
+
+                if "status" in obj and obj["status"] != prev_status:
+                    print(f"Status update: {obj['status']}")
+                    prev_status = obj["status"]
+        except requests.exceptions.ChunkedEncodingError:
+            print("⚠️ Streaming connection ended unexpectedly.")
             if not line:
                 continue
             decoded = line.decode("utf-8")
