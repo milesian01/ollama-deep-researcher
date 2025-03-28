@@ -18,15 +18,18 @@ COPY . /app
 
 # 2.5) Install Python dependencies
 RUN pip install --no-cache-dir \
-    requests \
+    langgraph>=0.2.55 \
+    langchain-community>=0.3.9 \
+    tavily-python>=0.5.0 \
+    langchain-ollama>=0.2.1 \
+    duckduckgo-search>=7.3.0 \
+    langchain-openai>=0.1.1 \
+    openai>=1.12.0 \
+    langchain_openai>=0.3.9 \
+    httpx>=0.28.1 \
+    markdownify>=0.11.0 \
     fastapi \
-    uvicorn[standard] \
-    langgraph \
-    langchain-core \
-    langchain-openai \
-    langchain-community \
-    langchain-ollama \
-    markdownify
+    uvicorn[standard]
 
 # 3) Provide default environment variables to point to Ollama (running elsewhere)
 #    Adjust the OLLAMA_URL to match your actual Ollama container or service.
