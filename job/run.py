@@ -93,30 +93,27 @@ else:
 
 start_time = time.time()
 # Send the request
-response = requests.post(url, json=payload, stream=True)
-response.raise_for_status()
-print("Initial response received; starting streaming loop")
+while True:
+    response = requests.post(url, json=payload, stream=True)
+    response.raise_for_status()
+    print("Initial response received; starting streaming loop")
 
-print("Streaming run output:")
+    print("Streaming run output:")
 
-with open(output_filename, "w") as f:
-    print("Entering while loop for streaming response")
-    # Starting with query: '"args.query value"'
-    print(f"Processing query: \"{args.query}\"")
+    with open(output_filename, "a") as f:
+        print("Entering while loop for streaming response")
+        print(f"Processing query: \"{args.query}\"")
 
-    prev_status = None
-    while True:
+        prev_status = None
         for line in response.iter_lines():
             if not line:
                 continue
             decoded = line.decode("utf-8")
-            print(f"Raw line: {decoded}")  # Debug print
+            print(f"Raw line: {decoded}")
 
-            # Skip heartbeat and event lines
             if decoded.startswith(":") or decoded.startswith("event:"):
                 continue
 
-            # Remove "data:" prefix if present
             if decoded.startswith("data:"):
                 decoded = decoded[len("data:"):].strip()
 
@@ -127,28 +124,19 @@ with open(output_filename, "w") as f:
                 print("Non-JSON data:", decoded)
                 continue
 
-            # Check for a pause condition: either a dedicated pause signal or a GraphRecursionError
             if isinstance(obj, dict) and (
                     obj.get("pause_reason") == "recursion_limit" or obj.get("error") == "GraphRecursionError"):
                 print("Recursion limit reached. Resuming automatically...")
-                from langgraph.types import Command  # Ensure this is at the top
                 resume_command = Command(resume=True)
-                print("🔁 Sending resume request with:", {
-                    "input": resume_command.dict(),
-                    "resume": True,
-                    "thread_id": thread_id,
-                    "recursion_limit": 3
-                })
-                response = requests.post(url, json={
+                payload = {
                     "assistant_id": "ollama_deep_researcher",
                     "graph": "ollama_deep_researcher",
                     "input": resume_command.dict(),
                     "resume": True,
                     "thread_id": thread_id,
                     "recursion_limit": 3
-                }, stream=True)
-                # Break out of the for-loop to process the new stream
-                break
+                }
+                break  # 🔁 Restart outer while loop with updated payload
 
             f.write(json.dumps(obj) + "\n")
             f.flush()
@@ -158,7 +146,7 @@ with open(output_filename, "w") as f:
                 print(f"Status update: {obj['status']}")
                 prev_status = obj["status"]
         else:
-            # If the inner for-loop completes normally, exit the while-loop.
+            # No pause = normal finish, exit outer loop
             break
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
