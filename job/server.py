@@ -46,6 +46,7 @@ async def run_graph(input_data: GraphInput, request: Request):
         body = await request.json()
         print(f"📦 Resume input: {body.get('input', {})}")
         try:
+            print("🔁 Resume triggered due to recursion limit.")
             resume_command = Command(resume=True)
             resume_input = body.get("input", asdict(resume_command))
             result = compiled_graph.invoke(resume_input, config=config)
@@ -89,7 +90,8 @@ async def stream_graph(input_data: GraphInput, request: Request):
                 await asyncio.sleep(0)
         except Exception as e:
             print(f"⚠️ Stream error: {e}")
-            yield f"event: error\ndata: {json.dumps({'error': str(e)})}\n\n"
+            # Gracefully emit the error as a final chunk
+            yield f"data: {json.dumps({'error': type(e).__name__, 'message': str(e)})}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
