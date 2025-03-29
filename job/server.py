@@ -1,5 +1,6 @@
 # === Model Definitions ===
 from fastapi import FastAPI, Request
+from langgraph.errors import GraphRecursionError
 from pydantic import BaseModel
 from typing import Optional
 from dataclasses import asdict
@@ -88,10 +89,9 @@ async def stream_graph(input_data: GraphInput, request: Request):
             for step in stream:
                 yield f"data: {json.dumps(step)}\n\n"
                 await asyncio.sleep(0)
-        except Exception as e:
-            print(f"⚠️ Stream error: {e}")
-            # Gracefully emit the error as a final chunk
-            yield f"data: {json.dumps({'error': type(e).__name__, 'message': str(e)})}\n\n"
+        except GraphRecursionError as e:
+            print(f"⚠️ Recursion limit hit: {e}")
+            yield f"data: {json.dumps({'error': 'GraphRecursionError', 'message': str(e), 'pause_reason': 'recursion_limit'})}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
