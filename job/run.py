@@ -212,8 +212,13 @@ with open(output_filename, "r", encoding="utf-8") as f:
             obj = json.loads(line)
             if "running_summary" in obj:
                 running_summary = obj["running_summary"]
+            elif "finalize_summary" in obj and "running_summary" in obj["finalize_summary"]:
+                running_summary = obj["finalize_summary"]["running_summary"]
+
             if "sources_gathered" in obj:
                 sources_gathered = obj["sources_gathered"]
+            elif "finalize_summary" in obj and "sources_gathered" in obj["finalize_summary"]:
+                sources_gathered = obj["finalize_summary"]["sources_gathered"]
         except json.JSONDecodeError:
             continue
 
