@@ -21,7 +21,7 @@ def strip_thinking_tokens(text: str) -> str:
 import os
 
 MAX_WEB_RESEARCH_LOOPS = int(os.getenv("MAX_WEB_RESEARCH_LOOPS", "40"))
-RECURSION_LIMIT = MAX_WEB_RESEARCH_LOOPS * 6 + 1  # Always allows one complete final loop
+RECURSION_LIMIT = 8  # Enough to always finish a full loop + safe headroom
 
 import os
 import requests
