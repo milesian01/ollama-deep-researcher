@@ -178,7 +178,14 @@ while True:
                 continue  # Retry with new payload
 
         else:
-            break  # No pause or error — exit loop
+            # If the stream completed without triggering a pause, check the last object
+            if not resume_handled:
+                print("✅ Graph finished execution.")
+                break
+            else:
+                resume_handled = False  # reset for next cycle
+                is_resume_run = True  # Ensure subsequent .jsonl logs always append
+                continue  # go back to top and run again
 end_time = time.time()
 # Calculate duration in hours and minutes correctly
 duration_seconds = end_time - start_time
