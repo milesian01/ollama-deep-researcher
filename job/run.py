@@ -30,16 +30,14 @@ raw_response = title_result.get("response", "").strip()
 print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 raw_response = strip_thinking_tokens(raw_response)
 print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
-# Extract first line, sanitize, and fallback if needed
+# Extract first line from model response
 first_line = raw_response.splitlines()[0].strip()
 
-# Clean up the filename: allow only letters, numbers, underscores, and hyphens
+# Clean up the filename: allow only safe characters
 sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
 
-if sanitized:
-    file_title = sanitized
-else:
-    file_title = "research_output"
+# Apply fallback if needed
+file_title = sanitized if sanitized else "research_output"
 
 
 # Configuration for graph step depth
