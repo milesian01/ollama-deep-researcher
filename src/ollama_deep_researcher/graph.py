@@ -94,7 +94,10 @@ def generate_query(state: SummaryState, config: RunnableConfig):
         if configurable.strip_thinking_tokens:
             content = strip_thinking_tokens(content)
         search_query = content
-    return {"search_query": search_query}
+    return {
+        "search_query": search_query,
+        "search_query_history": [search_query]
+    }
 
 def web_research(state: SummaryState, config: RunnableConfig):
     print("🧠 Node: web_research")
@@ -259,7 +262,10 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
         print(f"💡 Reflection generated follow-up query: {query}")
         if not query:
             return {"search_query": f"Tell me more about {state.research_topic}"}
-        return {"search_query": query}
+        return {
+            "search_query": query,
+            "search_query_history": [query]
+        }
     except ValueError:
         return {"search_query": f"Tell me more about {state.research_topic}"}
         
