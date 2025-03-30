@@ -46,10 +46,17 @@ title_response.raise_for_status()
 title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
 raw_response = strip_thinking_tokens(raw_response)
+print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 # Extract first line, sanitize, and fallback if needed
 first_line = raw_response.splitlines()[0].strip()
-file_title = first_line.replace(" ", "_")
-if not file_title or any(c in file_title for c in r'\/:*?"<>|'):
+import re
+
+# Clean up the filename: allow only letters, numbers, underscores, and hyphens
+sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
+
+if sanitized:
+    file_title = sanitized
+else:
     file_title = "research_output"
 # Sanitize the title (replace spaces with underscores)
 file_title = file_title.replace(" ", "_")
