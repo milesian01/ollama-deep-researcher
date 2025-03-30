@@ -39,12 +39,10 @@ title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
 raw_response = strip_thinking_tokens(raw_response)
 print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
-print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 # Extract first line from model response
 first_line = raw_response.splitlines()[0].strip()
 
 # Clean up the filename: allow only safe characters
-import re
 sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
 
 # Apply fallback if needed
