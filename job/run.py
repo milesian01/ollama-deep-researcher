@@ -6,10 +6,33 @@ def strip_thinking_tokens(text: str) -> str:
     """
     return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
 
-job/run.py
-print("🧠 Raw LLM title response:", repr(raw_response))
+# Generate file title using the gemma model via Ollama API
+ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
+title_url = f"{ollama_base_url}/api/generate"
+title_payload = {
+    "model": os.getenv("LOCAL_LLM", "deepResearch-ds-r1_70b_dr_13k"),
+    "prompt": f"Generate a short filename (no explanation) for the research topic: '{args.query}'. DO NOT include any reference to dates, months, or years. Use US file naming conventions. Output ONLY the filename, using only letters, numbers, hyphens, or underscores, with no spaces or extra punctuation.",
+    "stream": False
+}
+title_headers = {"Content-Type": "application/json"}
+title_response = requests.post(title_url, headers=title_headers, json=title_payload)
+title_response.raise_for_status()
 title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
+print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
+raw_response = strip_thinking_tokens(raw_response)
+print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
+# Extract first line, sanitize, and fallback if needed
+first_line = raw_response.splitlines()[0].strip()
+import re
+
+# Clean up the filename: allow only letters, numbers, underscores, and hyphens
+sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
+
+if sanitized:
+    file_title = sanitized
+else:
+    file_title = "research_output"
 
 
 # Configuration for graph step depth
@@ -51,8 +74,11 @@ print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 first_line = raw_response.splitlines()[0].strip()
 import re
 
-# Sanitize the title (replace spaces with underscores)
-file_title = file_title.replace(" ", "_")
+# Sanitize the title (replace spaces with underscores) and ensure it's defined
+if 'file_title' in locals():
+    file_title = file_title.replace(" ", "_")
+else:
+    file_title = "research_output"
 # Truncate if filename is too long
 max_filename_length = 100
 file_title = file_title[:max_filename_length]
