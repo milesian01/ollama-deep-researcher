@@ -78,6 +78,7 @@ url = "http://192.168.50.250:8000/run/stream"
 
 # Input payload
 # Generate unique thread ID for state management
+import hashlib
 import uuid
 if args.query.strip().lower() == "resume":
     # Reuse old thread ID logic if resuming
