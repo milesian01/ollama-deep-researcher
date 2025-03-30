@@ -8,3 +8,5 @@ repomix-output.xml
 job/job_queue.db
 .idea/
 job/__pycache__/
+.bash_history
+_loop_log.jsonl
