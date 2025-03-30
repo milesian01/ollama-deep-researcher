@@ -81,14 +81,6 @@ print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 first_line = raw_response.splitlines()[0].strip()
 import re
 
-# Sanitize the title (replace spaces with underscores) and ensure it's defined
-if 'file_title' in locals():
-    file_title = file_title.replace(" ", "_")
-else:
-    file_title = "research_output"
-# Truncate if filename is too long
-max_filename_length = 100
-file_title = file_title[:max_filename_length]
 
 # Define the output directory relative to this script's location
 output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_output")
