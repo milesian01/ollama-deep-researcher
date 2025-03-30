@@ -13,7 +13,6 @@ if sanitized:
     file_title = sanitized
 else:
     file_title = "research_output"
-```
 
 job/run.py
 print("🧠 Raw LLM title response:", repr(raw_response))
