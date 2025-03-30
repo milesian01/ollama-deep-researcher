@@ -245,9 +245,18 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
             format="json"
         )
     
+    # Build past query context
+    recent_queries = state.search_query_history[-5:]  # limit to last 5
+    query_list_str = "\n".join(f"- {q}" for q in recent_queries)
+    past_query_note = f"\n\n<Past Queries>\nThese follow-up queries were already attempted:\n{query_list_str}\nDo not repeat them.\n</Past Queries>"
+    
     messages = [
         SystemMessage(content=reflection_instructions.format(research_topic=state.research_topic)),
-        HumanMessage(content=f"Reflect on our existing knowledge: \n === \n {state.running_summary}, \n === \n And now identify a knowledge gap and generate a follow-up web search query:")
+        HumanMessage(content=(
+            f"Reflect on our existing knowledge: \n === \n {state.running_summary}, \n === \n"
+            f"And now identify a knowledge gap and generate a follow-up web search query:"
+            f"{past_query_note}"
+        ))
     ]
 
     try:
