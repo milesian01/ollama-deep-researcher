@@ -74,6 +74,9 @@ else:
     # Always generate a new thread ID for fresh runs
     thread_id = str(uuid.uuid4())
 print(f"🧵 Using thread_id: {thread_id}")
+
+with open(output_filename, "a") as f:
+    f.write(json.dumps({"thread_id": thread_id}) + "\n")
 print(f"🔢 Max loops from env: {MAX_WEB_RESEARCH_LOOPS}, Recursion limit: {RECURSION_LIMIT}")
 
 resume_mode = args.query.strip().lower() == "resume"
