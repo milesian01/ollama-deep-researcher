@@ -1,20 +1,17 @@
+import re
+
 def strip_thinking_tokens(text: str) -> str:
     """
-    Remove  and  tags and their content from the text.
-
-    Iteratively removes all occurrences of content enclosed in thinking tokens.
-
-    Args:
-        text (str): The text to process
-
-    Returns:
-        str: The text with thinking tokens and their content removed
+    Remove <think>...</think> or <thinking>...</thinking> tags and their content.
     """
-    while "ACTIONS" in text and "ACTIONS" in text:
-        start = text.find("ACTIONS")
-        end = text.find("ACTIONS") + len("ACTIONS")
-        text = text[:start] + text[end:]
-    return text
+    return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
+```
+
+job/run.py
+```python
+<<<<<<< SEARCH
+title_result = title_response.json()
+raw_response = title_result.get("response", "").strip()
 
 
 # Configuration for graph step depth
