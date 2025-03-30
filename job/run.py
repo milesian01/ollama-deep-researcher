@@ -1,5 +1,6 @@
 import os
 import requests
+import re
 
 def strip_thinking_tokens(text: str) -> str:
     """
@@ -31,7 +32,6 @@ raw_response = strip_thinking_tokens(raw_response)
 print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 # Extract first line, sanitize, and fallback if needed
 first_line = raw_response.splitlines()[0].strip()
-import re
 
 # Clean up the filename: allow only letters, numbers, underscores, and hyphens
 sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
