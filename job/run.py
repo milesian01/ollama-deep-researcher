@@ -5,6 +5,14 @@ def strip_thinking_tokens(text: str) -> str:
     Remove <think>...</think> or <thinking>...</thinking> tags and their content.
     """
     return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
+
+# Clean up the filename: allow only letters, numbers, underscores, and hyphens
+sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
+
+if sanitized:
+    file_title = sanitized
+else:
+    file_title = "research_output"
 ```
 
 job/run.py
@@ -46,6 +54,7 @@ title_response.raise_for_status()
 title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
 raw_response = strip_thinking_tokens(raw_response)
+print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 # Extract first line, sanitize, and fallback if needed
 first_line = raw_response.splitlines()[0].strip()
