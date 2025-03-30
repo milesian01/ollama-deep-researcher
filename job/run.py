@@ -6,14 +6,6 @@ def strip_thinking_tokens(text: str) -> str:
     """
     return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
 
-# Clean up the filename: allow only letters, numbers, underscores, and hyphens
-sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
-
-if sanitized:
-    file_title = sanitized
-else:
-    file_title = "research_output"
-
 job/run.py
 print("🧠 Raw LLM title response:", repr(raw_response))
 title_result = title_response.json()
@@ -59,13 +51,6 @@ print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
 first_line = raw_response.splitlines()[0].strip()
 import re
 
-# Clean up the filename: allow only letters, numbers, underscores, and hyphens
-sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
-
-if sanitized:
-    file_title = sanitized
-else:
-    file_title = "research_output"
 # Sanitize the title (replace spaces with underscores)
 file_title = file_title.replace(" ", "_")
 # Truncate if filename is too long
