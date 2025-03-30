@@ -247,6 +247,9 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
     
     # Build past query context
     recent_queries = state.search_query_history[-5:]  # limit to last 5
+    print("🧠 Past query history in prompt:")
+    for q in recent_queries:
+        print(f" - {q}")
     query_list_str = "\n".join(f"- {q}" for q in recent_queries)
     past_query_note = f"\n\n<Past Queries>\nThese follow-up queries were already attempted:\n{query_list_str}\nDo not repeat them.\n</Past Queries>"
     
