@@ -16,13 +16,16 @@ from langgraph.checkpoint.memory import MemorySaver
 # === Step 1: Initialize App and Globals ===
 app = FastAPI()
 compiled_graph = None  # Will hold the compiled graph instance
-checkpointer = MemorySaver()  # In-memory persistence
+from langgraph.checkpoint.memory import MemorySaver
+
+def get_new_checkpointer():
+    return MemorySaver()
 
 # === Step 2: Compile Graph Once at Startup ===
 @app.on_event("startup")
 async def compile_graph_once():
     global compiled_graph
-    compiled_graph = builder.compile(checkpointer=checkpointer)
+    compiled_graph = builder.compile(checkpointer=get_new_checkpointer())
     print("✅ Graph compiled and memory saver initialized.")
 
 # === Step 3: Define Input Model for POST body ===
