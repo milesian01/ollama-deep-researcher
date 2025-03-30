@@ -78,8 +78,13 @@ url = "http://192.168.50.250:8000/run/stream"
 
 # Input payload
 # Generate unique thread ID for state management
-import hashlib
-thread_id = hashlib.md5(args.query.encode()).hexdigest()
+import uuid
+if args.query.strip().lower() == "resume":
+    # Reuse old thread ID logic if resuming
+    thread_id = hashlib.md5(args.query.encode()).hexdigest()
+else:
+    # Always generate a new thread ID for fresh runs
+    thread_id = str(uuid.uuid4())
 print(f"🧵 Using thread_id: {thread_id}")
 print(f"🔢 Max loops from env: {MAX_WEB_RESEARCH_LOOPS}, Recursion limit: {RECURSION_LIMIT}")
 print(f"🔢 Max loops: {MAX_WEB_RESEARCH_LOOPS}, Recursion limit: {RECURSION_LIMIT}")
