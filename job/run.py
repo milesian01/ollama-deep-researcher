@@ -1,10 +1,17 @@
-import re
+import os
+import requests
 
 def strip_thinking_tokens(text: str) -> str:
     """
     Remove <think>...</think> or <thinking>...</thinking> tags and their content.
     """
     return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
+
+# Set up argument parser
+import argparse
+parser = argparse.ArgumentParser(description="Run LangGraph query.")
+parser.add_argument("query", help="The research topic to investigate")
+args = parser.parse_args()
 
 # Generate file title using the gemma model via Ollama API
 ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
