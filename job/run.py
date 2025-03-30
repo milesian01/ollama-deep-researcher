@@ -1,6 +1,13 @@
 import os
-import requests
 import re
+import json
+import time
+import uuid
+import argparse
+import hashlib
+import requests
+from datetime import datetime
+from langgraph.types import Command
 
 def strip_thinking_tokens(text: str) -> str:
     """
@@ -9,31 +16,13 @@ def strip_thinking_tokens(text: str) -> str:
     return re.sub(r'<(think|thinking)>.*?</\1>', '', text, flags=re.DOTALL)
 
 # Set up argument parser
-import argparse
 parser = argparse.ArgumentParser(description="Run LangGraph query.")
 parser.add_argument("query", help="The research topic to investigate")
 args = parser.parse_args()
-
-
 
 # Configuration for graph step depth
-import os
-
 MAX_WEB_RESEARCH_LOOPS = int(os.getenv("MAX_WEB_RESEARCH_LOOPS", "40"))
 RECURSION_LIMIT = 8  # Enough to always finish a full loop + safe headroom
-
-import os
-import requests
-import json
-import argparse
-import time
-from datetime import datetime
-from langgraph.types import Command
-
-# Set up argument parser
-parser = argparse.ArgumentParser(description="Run LangGraph query.")
-parser.add_argument("query", help="The research topic to investigate")
-args = parser.parse_args()
 
 # Generate file title using the gemma model via Ollama API
 ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
