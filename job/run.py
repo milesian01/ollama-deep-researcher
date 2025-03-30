@@ -8,8 +8,7 @@ def strip_thinking_tokens(text: str) -> str:
 ```
 
 job/run.py
-```python
-<<<<<<< SEARCH
+print("🧠 Raw LLM title response:", repr(raw_response))
 title_result = title_response.json()
 raw_response = title_result.get("response", "").strip()
 
