@@ -61,30 +61,6 @@ output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_output")
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-# Generate file title using the gemma model via Ollama API
-ollama_base_url = "http://192.168.50.250:30068"  # from your compose file's OLLAMA_BASE_URL
-title_url = f"{ollama_base_url}/api/generate"
-title_payload = {
-    "model": os.getenv("LOCAL_LLM", "deepResearch-ds-r1_70b_dr_13k"),
-    "prompt": f"Generate a short filename (no explanation) for the research topic: '{args.query}'. DO NOT include any reference to dates, months, or years. Use US file naming conventions. Output ONLY the filename, using only letters, numbers, hyphens, or underscores, with no spaces or extra punctuation.",
-    "stream": False
-}
-title_headers = {"Content-Type": "application/json"}
-title_response = requests.post(title_url, headers=title_headers, json=title_payload)
-title_response.raise_for_status()
-title_result = title_response.json()
-raw_response = title_result.get("response", "").strip()
-raw_response = strip_thinking_tokens(raw_response)
-print(f"🧠 Raw LLM filename (post-strip): {repr(raw_response)}")
-# Extract first line from model response
-first_line = raw_response.splitlines()[0].strip()
-
-# Clean up the filename: allow only safe characters
-import re
-sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
-
-# Apply fallback if needed
-file_title = sanitized if sanitized else "research_output"
 
 # Target LangGraph streaming endpoint
 timestamp = datetime.now().strftime("%Y-%m-%d_%I-%M-%S_%p")
