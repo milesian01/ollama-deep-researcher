@@ -47,6 +47,7 @@ sanitized = re.sub(r'[^a-zA-Z0-9_\-]', '', first_line)
 
 # Apply fallback if needed
 file_title = sanitized if sanitized else "research_output"
+print(f"📁 Final filename: {file_title}")
 
 # Define the output directory relative to this script's location
 output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_output")
